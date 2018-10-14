@@ -98,8 +98,7 @@ class User(AbstractBaseUser):
                 self.middle_name.title(),
                 self.last_name.title()
             )
-        else:
-            return self.get_short_name
+        return self.get_short_name
 
     @property
     def get_short_name(self):
