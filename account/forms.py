@@ -1,0 +1,115 @@
+from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from .models import ACCOUNT_TYPE_CHOICES
+
+User = get_user_model()
+
+
+class UserCreationForm(forms.ModelForm):
+    account_type = forms.ChoiceField(label='Account Type', choices=ACCOUNT_TYPE_CHOICES)
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        exclude = []
+        unique_together = ('username', 'email')
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password2 is not None and password1 is not None and password1 != password2:
+            raise forms.ValidationError('Password don\'t match!')
+        return password2
+
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        if self.cleaned_data.get('account_type') == 'Administrator':
+            user.is_staff = user.is_superuser = True
+        elif self.cleaned_data['account_type'] == 'Staff':
+            user.is_staff = True
+        elif self.cleaned_data['account_type'] == 'Student':
+            user.is_student = True
+        elif self.cleaned_data['account_type'] == 'Faculty':
+            user.is_faculty = True
+        if commit:
+            user.save()
+        return user
+
+
+class UserChangeForm(forms.ModelForm):
+    class Meta:
+        model = User
+        exclude = []
+        unique_together = ('username', 'email')
+
+    password = ReadOnlyPasswordHashField()
+    account_type = forms.ChoiceField(label='Account Type', choices=ACCOUNT_TYPE_CHOICES, initial='')
+
+    def clean_password(self):
+        # Regardless of what the user provides, return the initial value.
+        # This is done here, rather than on the field, because the
+        # field does not have access to the initial value
+        return self.initial["password"]
+
+    def save(self, commit=True):
+        user = super(UserChangeForm, self).save(commit=False)
+        proxy_type = self.cleaned_data.get('account_type')
+        if proxy_type == 'Administrator':
+            user.is_staff = user.is_superuser = True
+        elif proxy_type == 'Staff':
+            user.is_staff = True
+            user.is_superuser = False
+        elif proxy_type == 'Student':
+            user.is_superuser = user.is_staff = user.is_faculty = False
+            user.is_student = True
+        elif proxy_type == 'Faculty':
+            user.is_superuser = user.is_staff = user.is_student = False
+            user.is_faculty = True
+        else:
+            pass  # do nothing
+        if commit:
+            user.save()
+        return user
+
+
+class UserAdmin(BaseUserAdmin):
+    add_form = UserCreationForm  # create view
+    form = UserChangeForm  # update view
+
+    list_display = [
+        'username', 'email',
+        'is_active', 'is_superuser',
+        'is_staff', 'is_faculty', 'is_student'
+    ]
+    list_filter = ['is_active', 'is_staff', 'is_superuser', 'is_student', 'is_faculty']
+    fieldsets = (
+        ('Credentials', {'fields': ('username', 'email', 'password')}),
+        (
+            'Personal Information', {
+                'fields': (
+                    'first_name', 'middle_name', 'last_name',
+                    'birth_date', 'gender', 'address', 'photo', 'phone_number'
+                )
+            }
+        ),
+        ('Account Status', {'fields': ('is_active', 'account_type',)})
+    )
+    add_fieldsets = (
+        (
+            None, {
+                'classes': ('wide',),
+                'fields': (
+                    'username', 'email', 'first_name', 'middle_name', 'last_name',
+                    'birth_date', 'gender', 'address', 'photo', 'phone_number', 'is_active', 'account_type',
+                    'password1', 'password2'
+                ),
+            }
+        ),
+    )
+    search_fields = ('email',)
+    ordering = ('email',)
+    filter_horizontal = ()

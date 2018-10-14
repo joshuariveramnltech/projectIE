@@ -1,8 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.core.validators import RegexValidator
 
 # Create your models here.
+
+GENDER_CHOICES = (('male', 'Male'), ('female', 'Female'))
+ACCOUNT_TYPE_CHOICES = (
+    ('---Select---', '---Select---'),
+    ('Student', 'Student'), ('Faculty', 'Faculty'),
+    ('Staff', 'Staff'), ('Administrator', 'Administrator')
+)
+
+phone_regex = RegexValidator(regex="^\+63-\d{3}\-\d{4}\-\d{3}$", message="Format: +63-999-9999-999")
 
 
 class UserManager(BaseUserManager):
@@ -64,19 +75,27 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    GENDER_CHOICES = (('male', 'Male'), ('female', 'Female'))
     username = models.CharField(max_length=25, unique=True)
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     middle_name = models.CharField(max_length=255, null=True, blank=True)
-    birthday = models.DateField(
-        max_length=255, blank=True, null=True,
+    birth_date = models.DateField(
+        max_length=255, blank=True, null=True, verbose_name='Birth Day'
     )
     gender = models.CharField(
         max_length=25, blank=True, null=True, choices=GENDER_CHOICES, default='male')
     address = models.CharField(max_length=255, blank=True, default='')
+    photo = models.ImageField(upload_to='user/profile/photo/%Y/%m/%d/', blank=True, null=True)
+    phone_number = models.CharField(
+        validators=[phone_regex, ],
+        max_length=20,
+        blank=True, default='',
+        help_text="Please use the format: +63-XXX-XXXX-XXX"
+    )
     is_active = models.BooleanField(default=True, verbose_name=u"Active")
+    is_student = models.BooleanField(default=False, editable=False, verbose_name=u'Student')
+    is_faculty = models.BooleanField(default=False, editable=False, verbose_name=u'Faculty')
     is_staff = models.BooleanField(default=False, verbose_name=u"Staff")
     is_superuser = models.BooleanField(default=False, verbose_name=u"Superuser")
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -98,8 +117,7 @@ class User(AbstractBaseUser):
                 self.middle_name.title(),
                 self.last_name.title()
             )
-        else:
-            return self.get_short_name
+        return self.get_short_name
 
     @property
     def get_short_name(self):
@@ -112,4 +130,37 @@ class User(AbstractBaseUser):
         return True
 
     def __str__(self):
-        return self.get_full_name
+        self.__account_type = "Floating Account"
+        if self.is_superuser:
+            self.__account_type = 'Administrator'
+        elif self.is_student:
+            self.__account_type = 'Student'
+        elif self.is_teacher:
+            self.__account_type = 'Faculty'
+        elif self.is_staff:
+            self.__account_type = 'Staff'
+        return self.get_full_name + " (" + self.__account_type + ")"
+
+
+class StudentProfile(models.Model):
+    user = models.ForeignKey(User, related_name='student_profile', on_delete=models.CASCADE)
+
+
+class FacultyProfile(models.Model):
+    user = models.ForeignKey(User, related_name='faculty_profile', on_delete=models.CASCADE)
+    is_chairperson = models.BooleanField(default=False, verbose_name=u'Chairperson?')
+
+
+class StaffProfile(models.Model):
+    user = models.ForeignKey(User, related_name='staff_profile', on_delete=models.CASCADE)
+
+
+@receiver(post_save, sender=User)
+def create_dynamic_profile(sender, **kwargs):
+    if kwargs['created']:
+        if kwargs['instance'].is_student:
+            StudentProfile.objects.create(user=kwargs['instance'])
+        elif kwargs['instance'].is_faculty:
+            FacultyProfile.objects.create(user=kwargs['instance'])
+        elif kwargs['instance'].is_staff:
+            StaffProfile.objects.create(user=kwargs['instance'])
