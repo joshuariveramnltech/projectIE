@@ -162,7 +162,7 @@ class User(AbstractBaseUser):
             self.__account_type = 'Administrator'
         elif self.is_student:
             self.__account_type = 'Student'
-        elif self.is_teacher:
+        elif self.is_faculty:
             self.__account_type = 'Faculty'
         elif self.is_staff:
             self.__account_type = 'Staff'
@@ -170,7 +170,7 @@ class User(AbstractBaseUser):
 
 
 class Year(models.Model):
-    course = course = models.CharField(max_length=25, choices=COURSE_CODE_CHOICES, default='BSIE')
+    course = course = models.CharField(max_length=25, choices=COURSE_CODE_CHOICES, default=4)
     year = models.CharField(max_length=10, choices=YEAR_CHOICES, default='1')
 
     class Meta:
@@ -195,12 +195,22 @@ class YearAndSection(models.Model):
 
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, related_name='student_profile', on_delete=models.CASCADE)
-    course = models.CharField(max_length=25, choices=COURSE_CODE_CHOICES, default='BSIE')
+    course = models.CharField(max_length=25, choices=COURSE_CODE_CHOICES, null=True, blank=True, default='BSIE')
     course_description = models.CharField(
-        max_length=100, choices=COURSE_DESCRIPTION, default='Bachelor of Science in Industrial Engineering'
+        max_length=100, choices=COURSE_DESCRIPTION, null=True, blank=True,
+        default='Bachelor of Science in Industrial Engineering'
     )
     year_and_section = models.ForeignKey(YearAndSection, on_delete=models.SET_NULL, related_name='students', null=True)
     status = models.CharField(max_length=25, choices=SCHOLASTIC_STATUS_CHOICES, default='Regular')
+
+    class Meta:
+        verbose_name_plural = 'Student Profiles'
+
+    def __str__(self):
+        return self.user.get_full_name + " " + str(self.year_and_section)
+
+    # def save(self, *args, **kwargs):
+    #     super(StudentProfile, self).save(*args, **kwargs)
 
 
 class FacultyProfile(models.Model):
