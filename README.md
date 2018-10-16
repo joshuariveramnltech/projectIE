@@ -39,8 +39,11 @@
 * ##### [Kim Sunga](https://gitlab.com/sungakim816)
 * ##### [Cristian Umali ](https://gitlab.com/cristianumali.a99)
 
+
 <br>
+
 ---
+
 # Powered by:
 ## [Django 2.1.2 ](https://www.djangoproject.com/)
 ## [Materialize 1.0.0](https://materializecss.com/about.html)
