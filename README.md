@@ -2,7 +2,7 @@
 ## Database Management System Final Project
 
 
-### Dependencies
+### Installing Dependencies
 1. Install  [Python 3.6.X](https://www.python.org/downloads/)
 2. Make sure Python 3 is included in your System's Path.
 3. Install XAMPP.
@@ -23,17 +23,24 @@
 7. When everything is done and dusted, you can now test if it works..
 
    Run the command: `python manage.py runserver`
+   
+8. Create your superuser account 
+   `python manage.py createsuperuser`   
+   This will prompt you to enter your credentials, fill it up completely then   
+   go to your localhost:8080.
+
 <br> <br>
 ---
 ### Developers:
-* ##### Aira Espinosa
+* ##### [Aira Yllana](https://gitlab.com/AiraYllana)
 * ##### Genesis Edano
 * ##### Christian Gregorio
 * ##### [Joshua Kim Rivera ](https://www.gitlab.com/joshuakimrivera)
 * ##### [Kim Sunga](https://gitlab.com/sungakim816)
+* ##### [Cristian Umali ](https://gitlab.com/cristianumali.a99)
 
-
+<br>
 ---
-### Powered by:
+# Powered by:
 ## [Django 2.1.2 ](https://www.djangoproject.com/)
 ## [Materialize 1.0.0](https://materializecss.com/about.html)
