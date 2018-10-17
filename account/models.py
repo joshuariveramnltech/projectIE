@@ -38,7 +38,11 @@ COURSE_CODE_CHOICES = (
     ('BSECE', 'BSECE'), ('BSEE', 'BSEE'),
     ('BSIE', 'BSIE'), ('BSME', 'BSME')
 )
-SEMESTER_CHOICES = (('First', 'First'), ('Second', 'Second'), ('Summer', 'Summer'))
+SEMESTER_CHOICES = (
+    ('First Semester', 'First Semester'),
+    ('Second Semester', 'Second Semester'),
+    ('Summer Semester', 'Summer Semester')
+)
 
 phone_regex = RegexValidator(regex="^\+63-\d{3}\-\d{4}\-\d{3}$", message="Format: +63-999-9999-999")
 
