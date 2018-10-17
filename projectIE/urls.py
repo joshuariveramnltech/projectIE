@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # login, logout
     path('account/', include('django.contrib.auth.urls')),
-    path('account/', include('account.urls', namespace='account'))
+    path('account/', include('account.urls', namespace='account')),
+    path('grading_system/', include('grading_system.urls', namespace='grading_system')),
 ]

@@ -28,38 +28,102 @@ GRADE_CHOICES = (
     ('W', 'W'), ('NOT S', 'NOT S')
 )
 
+GRADE_STATUS_CHOICES = (('P', 'P'), ('F', 'F'), ('INC', 'INC'),
+                        ('D', 'D'), ('W', 'W')
+                        )
 
-class Subject(models.Model):
-    subject_code = models.CharField(max_length=50)
+possible_choices = ('W', 'INC', 'NOT S', 'D')
+
+
+class GeneralSubject(models.Model):
+    subject_code = models.CharField(max_length=50, blank=True)
     description = models.CharField(max_length=75)
-    semester = models.CharField(max_length=25, choices=SEMESTER_CHOICES, default='First Semester')
-    year_and_section = models.ForeignKey(YearAndSection, related_name='subjects', on_delete=models.DO_NOTHING)
-    school_year = models.CharField(max_length=15, choices=SY)
     units = models.PositiveSmallIntegerField()
-    prerequisite = models.CharField(max_length=25, null=True, blank=True)
+    prerequisite = models.ManyToManyField('self', symmetrical=False, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = (
-            'subject_code', 'description', 'school_year', 'year_and_section'
-        )
+        verbose_name_plural = 'Curriculum'
+        unique_together = ('subject_code', 'description')
 
     def __str__(self):
         return self.subject_code + " " + self.description
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if (self.subject_code != self.subject_code.strip().upper() or
+                self.description != self.description.strip().title()):
+            self.subject_code = self.subject_code.strip().upper()
+            self.description = self.description.strip().title()
+        super(GeneralSubject, self).save()
+
+
+class SubjectInstance(models.Model):
+    subject = models.ForeignKey(
+        GeneralSubject, related_name='subject_instance', on_delete=models.SET_NULL, null=True
+    )
+    instructor = models.ForeignKey(
+        FacultyProfile, related_name='given_grade', on_delete=models.SET_NULL, null=True, blank=True
+    )
+    school_year = models.CharField(max_length=15, choices=SY,
+                                   default=str(datetime.now().year) + "-" + str(datetime.now().year + 1))
+    year_and_section = models.ForeignKey(YearAndSection, related_name='subjects', on_delete=models.DO_NOTHING)
+    semester = models.CharField(max_length=25, choices=SEMESTER_CHOICES, default='First Semester')
+    schedule = models.TextField(blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = 'Subjects'
+
+    def __str__(self):
+        return str(self.subject) + " " + str(self.semester) + " " + str(self.school_year)
+
 
 class SubjectGrade(models.Model):
-    student = models.ForeignKey(StudentProfile, related_name='student_grade', on_delete=models.DO_NOTHING)
-    subject = models.ForeignKey(Subject, related_name='subject_grade', on_delete=models.DO_NOTHING)
-    instructor = models.ForeignKey(FacultyProfile, related_name='given_grade', on_delete=models.DO_NOTHING)
-    grade = models.CharField(max_length=15, choices=GRADE_CHOICES, default='1.00')
+    student = models.ForeignKey(StudentProfile, related_name='student_grade', on_delete=models.CASCADE)
+    subject = models.ForeignKey(SubjectInstance, related_name='subject_grade', on_delete=models.DO_NOTHING)
+    school_year = models.CharField(max_length=15, choices=SY,
+                                   default=str(datetime.now().year) + "-" + str(datetime.now().year + 1))
+    final_grade = models.CharField(max_length=15, choices=GRADE_CHOICES, default='1.00', blank=True)
+    grade_status = models.CharField(max_length=15, choices=GRADE_STATUS_CHOICES, editable=False, blank=True)
+    is_finalized = models.BooleanField(default=False, verbose_name=u'Finalized?',
+                                       help_text='Once finalized, you can no longer make any more changes.')
     date_created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name_plural = 'Subject Grades'
-        unique_together = ('student', 'subject')
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.final_grade and self.grade_status is None:
+            __grade = self.final_grade
+            if __grade == '5' or __grade == '4':
+                self.grade_status = 'F'
+            elif __grade in possible_choices:
+                self.grade_status = __grade
+            else:
+                self.grade_status = 'P'
 
     def __str__(self):
         return self.student.user.get_full_name + " " + str(self.subject)
+
+
+class SemesterFinalGrade(models.Model):
+    student = models.ForeignKey(StudentProfile, related_name='semester_grade',
+                                on_delete=models.SET_NULL, null=True, blank=True)
+    semester = models.CharField(max_length=25, choices=SEMESTER_CHOICES, default='First Semester')
+    subjects = models.ManyToManyField(SubjectInstance, related_name='semester_subjects', symmetrical=False)
+    grade = models.CharField(max_length=10, blank=True, null=True)
+    school_year = models.CharField(max_length=25, choices=SY, default='First Semester')
+    date_created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.student.user.get_full_name + " " + self.semester + " " + self.school_year
+
+    class Meta:
+        verbose_name_plural = 'Semester Final Grade'
+        unique_together = ('student', 'semester', 'school_year')

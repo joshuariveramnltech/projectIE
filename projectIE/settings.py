@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = '#h%(l^ew9p^8$0qy18x5d5!sz0*xa1ozsb=q6apu$nnoh4g*-r'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -62,6 +60,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'account/templates/'),
             os.path.join(BASE_DIR, 'account/templates/account/'),
             os.path.join(BASE_DIR, 'account/templates/registration/'),
+            os.path.join(BASE_DIR, 'grading_system/templates/'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -76,7 +75,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'projectIE.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -119,7 +117,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

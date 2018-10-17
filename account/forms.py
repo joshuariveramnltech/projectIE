@@ -44,6 +44,7 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         exclude = []
+        labels = {'account_type': 'Change Account Type'}
         unique_together = ('username', 'email')
 
     password = ReadOnlyPasswordHashField()
@@ -53,7 +54,7 @@ class UserChangeForm(forms.ModelForm):
         # Regardless of what the user provides, return the initial value.
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
-        return self.initial["password"]
+        return self.initial.get('password')
 
     def save(self, commit=True):
         user = super(UserChangeForm, self).save(commit=False)
@@ -80,6 +81,9 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm  # create view
     form = UserChangeForm  # update view
 
+    # The fields to be used in displaying the User model.
+    # These override the definitions on the base UserAdmin
+    # that reference specific fields on auth.User.
     list_display = [
         'username', 'email',
         'is_active', 'is_superuser',
@@ -88,16 +92,18 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ['is_active', 'is_staff', 'is_superuser', 'is_student', 'is_faculty']
     fieldsets = (
         ('Credentials', {'fields': ('username', 'email', 'password')}),
+        ('Personal Information', {'fields': ('first_name', 'middle_name', 'last_name',
+                                             'birth_date', 'gender', 'address', 'photo', 'phone_number')
+                                  }
+         ),
         (
-            'Personal Information', {
-                'fields': (
-                    'first_name', 'middle_name', 'last_name',
-                    'birth_date', 'gender', 'address', 'photo', 'phone_number'
-                )
+            'Account Status', {
+                'fields': ('is_active', 'account_type',)
             }
-        ),
-        ('Account Status', {'fields': ('is_active', 'account_type',)})
+        )
     )
+    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
+    # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (
             None, {
