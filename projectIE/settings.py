@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
     'grading_system.apps.GradingSystemConfig',
+    'administrator.apps.AdministratorConfig',
 ]
 
 MIDDLEWARE = [

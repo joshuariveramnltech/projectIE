@@ -27,7 +27,7 @@
 8. Create your superuser account 
    `python manage.py createsuperuser`   
    This will prompt you to enter your credentials, fill it up completely then   
-   go to your localhost:8080.
+   go to your localhost:8000.
 
 <br> <br>
 ---
