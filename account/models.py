@@ -17,7 +17,6 @@ YEAR_CHOICES = (
     ('1', '1'), ('2', '2'), ('3', '3'),
     ('4', '4'), ('5', '5')
 )
-SECTION_CHOICES = YEAR_CHOICES
 CIVIL_STATUS_CHOICES = (('single', 'Single'), ('married', 'Married'))
 JOB_STATUS = (('Full Time', 'Full Time'), ('Part Time', 'Part Time'))
 
@@ -31,6 +30,18 @@ COURSE_DESCRIPTION = (
     ('Bachelor of Science in Electrical Engineering', 'Bachelor of Science in Electrical Engineering'),
     ('Bachelor of Science in Industrial Engineering', 'Bachelor of Science in Industrial Engineering'),
     ('Bachelor of Science in Mechanical Engineering', 'Bachelor of Science in Mechanical Engineering'),
+)
+
+DEPARTMENT_CHOICES = (
+    ('Department of Civil Engineering', 'Department of Civil Engineering'),
+    ('Department of Computer Engineering', 'Department of Computer Engineering'),
+    (
+        'Department of Electronics and Communications Engineering',
+        'Department of Electronics and Communications Engineering'
+    ),
+    ('Department of Electrical Engineering', 'Department of Electrical Engineering'),
+    ('Department of Industrial Engineering', 'Department of Industrial Engineering'),
+    ('Department of Mechanical Engineering', 'Department of Mechanical Engineering'),
 )
 
 COURSE_CODE_CHOICES = (
@@ -187,7 +198,7 @@ class Year(models.Model):
 
 class YearAndSection(models.Model):
     year = models.ForeignKey(Year, on_delete=models.DO_NOTHING, related_name='sections')
-    section = models.CharField(max_length=10, choices=YEAR_CHOICES, default='1')
+    section = models.CharField(max_length=10)
 
     class Meta:
         verbose_name_plural = 'Year and Section'
@@ -195,6 +206,12 @@ class YearAndSection(models.Model):
 
     def __str__(self):
         return str(self.year) + "-" + self.section
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.section != self.section.upper():
+            self.section = self.section.upper()
+        super(YearAndSection, self).save()
 
 
 class StudentProfile(models.Model):
@@ -204,7 +221,8 @@ class StudentProfile(models.Model):
         max_length=100, choices=COURSE_DESCRIPTION, null=True, blank=True,
         default='Bachelor of Science in Industrial Engineering'
     )
-    year_and_section = models.ForeignKey(YearAndSection, on_delete=models.SET_NULL, related_name='students', null=True)
+    year_and_section = models.ForeignKey(YearAndSection, on_delete=models.DO_NOTHING, related_name='students',
+                                         blank=True, null=True)
     status = models.CharField(max_length=25, choices=SCHOLASTIC_STATUS_CHOICES, default='Regular')
 
     class Meta:
@@ -219,6 +237,7 @@ class StudentProfile(models.Model):
 
 class FacultyProfile(models.Model):
     user = models.OneToOneField(User, related_name='faculty_profile', on_delete=models.CASCADE)
+    department = models.CharField(max_length=255, choices=DEPARTMENT_CHOICES, null=True, blank=True)
     civil_status = models.CharField(
         max_length=25, choices=CIVIL_STATUS_CHOICES, default='single')
     spouse = models.CharField(max_length=50, null=True,
