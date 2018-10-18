@@ -17,7 +17,7 @@ admin.site.register(User, UserAdmin)
 
 @admin.register(StudentProfile)
 class StudentProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'course', 'course_description', 'status']
+    list_display = ['user', 'course', 'course_description', 'year_and_section', 'status']
     search_fields = ['user__email', 'course', 'status', 'user__username']
     list_filter = ['status', 'course', 'year_and_section']
 

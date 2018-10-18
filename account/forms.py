@@ -3,6 +3,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import ACCOUNT_TYPE_CHOICES
+from .models import (
+    StudentProfile, FacultyProfile, StaffProfile
+)
 
 User = get_user_model()
 
@@ -119,3 +122,42 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email',)
     ordering = ('email',)
     filter_horizontal = ()
+
+
+# for personal use only
+class PersonalUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        exclude = [
+            'username', 'first_name', 'last_name',
+            'middle_name', 'is_staff', 'is_superuser',
+            'last_login', 'password', 'is_active'
+        ]
+
+
+# for faculty personal use
+class PersonalFacultyForm(forms.ModelForm):
+    class Meta:
+        model = FacultyProfile
+        exclude = [
+            'user', 'department',
+            'is_chairperson', 'status', 'updated', 'date_joined'
+        ]
+
+
+# for staff personal use
+class PersonalStaffForm(forms.ModelForm):
+    class Meta:
+        model = StaffProfile
+        exclude = [
+            'user', 'date_joined', 'updated',
+        ]
+
+
+# for student personal use
+class PersonalStudentForm(forms.ModelForm):
+    class Meta:
+        model = StudentProfile
+        fields = [
+           'guardian', 'additional_information',
+        ]

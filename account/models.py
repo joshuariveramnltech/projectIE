@@ -185,11 +185,11 @@ class User(AbstractBaseUser):
 
 
 class Year(models.Model):
-    course = course = models.CharField(max_length=25, choices=COURSE_CODE_CHOICES, default=4)
+    course = course = models.CharField(max_length=25, choices=COURSE_CODE_CHOICES, default='BSIE')
     year = models.CharField(max_length=10, choices=YEAR_CHOICES, default='1')
 
     class Meta:
-        verbose_name_plural = 'Year Levels'
+        verbose_name_plural = 'Year'
         unique_together = ('course', 'year')
 
     def __str__(self):
@@ -224,6 +224,8 @@ class StudentProfile(models.Model):
     year_and_section = models.ForeignKey(YearAndSection, on_delete=models.DO_NOTHING, related_name='students',
                                          blank=True, null=True)
     status = models.CharField(max_length=25, choices=SCHOLASTIC_STATUS_CHOICES, default='Regular')
+    guardian = models.CharField(max_length=50, blank=True)
+    additional_information = models.TextField(blank=True)
 
     class Meta:
         verbose_name_plural = 'Student Profiles'
