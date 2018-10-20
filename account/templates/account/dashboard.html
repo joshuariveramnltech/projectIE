@@ -2,7 +2,15 @@
 {% load staticfiles %}
 {% block title %}{{ request.user.get_full_name }} | Dashboard{% endblock title %}
 {% block content %}
-    <h1>Welcome</h1>
-<a href="{% url 'logout' %}">Logout</a>
-<a href="{% url 'account:change_password' %}">Change Password</a>
+<h1>Welcome</h1>
+<div>
+    <a href="{% url 'logout' %}">Logout</a>
+    <a href="{% url 'account:change_password' %}">Change Password</a><br/>
+    <a href="{% url 'account:view_update_profile' %}">Profile</a> <br/>
+    {% if request.user.is_student %}
+    <span><a href="{% url 'grading_system:view_all_grades' %}">Grades</a></span> &nbsp;
+    <span><a href="#">Schedule</a></span> &nbsp;
+    <span><a href="#">Registration</a></span> &nbsp;
+    {% endif %}
+</div>
 {% endblock content %}
