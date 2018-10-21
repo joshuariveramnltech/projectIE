@@ -11,9 +11,11 @@ User = get_user_model()
 
 
 class UserCreationForm(forms.ModelForm):
-    account_type = forms.ChoiceField(label='Account Type', choices=ACCOUNT_TYPE_CHOICES)
+    account_type = forms.ChoiceField(
+        label='Account Type', choices=ACCOUNT_TYPE_CHOICES)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label='Confirm Password', widget=forms.PasswordInput)
 
     class Meta:
         model = User
@@ -51,7 +53,8 @@ class UserChangeForm(forms.ModelForm):
         unique_together = ('username', 'email')
 
     password = ReadOnlyPasswordHashField()
-    account_type = forms.ChoiceField(label='Account Type', choices=ACCOUNT_TYPE_CHOICES, initial='')
+    account_type = forms.ChoiceField(
+        label='Account Type', choices=ACCOUNT_TYPE_CHOICES, initial='')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -92,7 +95,8 @@ class UserAdmin(BaseUserAdmin):
         'is_active', 'is_superuser',
         'is_staff', 'is_faculty', 'is_student'
     ]
-    list_filter = ['is_active', 'is_staff', 'is_superuser', 'is_student', 'is_faculty']
+    list_filter = ['is_active', 'is_staff',
+                   'is_superuser', 'is_student', 'is_faculty']
     fieldsets = (
         ('Credentials', {'fields': ('username', 'email', 'password')}),
         ('Personal Information', {'fields': ('first_name', 'middle_name', 'last_name',
@@ -159,5 +163,5 @@ class PersonalStudentForm(forms.ModelForm):
     class Meta:
         model = StudentProfile
         fields = [
-           'guardian', 'additional_information',
+            'guardian', 'additional_information',
         ]

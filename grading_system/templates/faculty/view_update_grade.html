@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject_grade.student.user.get_full_name }} | {{ subject_grade.subject_instance.subject.description
+        }} </title>
+</head>
+<body>
+<div>
+    {% if messages %}
+    {% for message in messages %}
+    <p><h4>{{ message }}</h4></p>
+    {% endfor %}
+    {% endif %}
+    <p>Student: {{ subject_grade.student.user.get_full_name }}</p>
+    <p>Subject: {{ subject_grade.subject_instance.subject.description }}</p>
+    <p>Semester: {{ subject_grade.semester }}</p>
+    <p>Semester: {{ subject_grade.school_year }}</p>
+    <form method="post" action="{% url 'grading_system:view_update_grade' subject_grade.id %}">
+        {% csrf_token %}
+        {{ update_subject_grade_form.as_p }}
+        <input type="submit" value="Submit"/>
+    </form>
+    <a href="{% url 'grading_system:view_students_per_subject' subject_grade.subject_instance.id subject_grade.subject_instance.subject.subject_code %}">
+        Back
+    </a>
+</div>
+</body>
+</html>
