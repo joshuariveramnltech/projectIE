@@ -15,9 +15,12 @@ class GeneralSubjectAdmin(admin.ModelAdmin):
 
 @admin.register(SubjectInstance)
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ['subject', 'semester', 'school_year', 'year_and_section', 'instructor']
-    search_fields = ['subject__subject_code', 'subject__description', 'instructor', 'school_year']
-    list_filter = ['year_and_section__year', 'year_and_section__section', 'school_year']
+    list_display = ['subject', 'semester', 'school_year',
+                    'year_and_section', 'instructor', 'schedule']
+    search_fields = ['subject__subject_code',
+                     'subject__description', 'instructor', 'school_year']
+    list_filter = ['year_and_section__year',
+                   'year_and_section__section', 'school_year']
 
 
 @admin.register(SubjectGrade)
@@ -34,5 +37,6 @@ class SubjectGradeAdmin(admin.ModelAdmin):
 @admin.register(SemesterFinalGrade)
 class SemesterGradeAdmin(admin.ModelAdmin):
     list_display = ['student', 'semester', 'school_year', 'grade']
-    search_fields = ['student__email', 'student__username', 'semester', 'school_year']
+    search_fields = ['student__email',
+                     'student__username', 'semester', 'school_year']
     list_filter = ['semester', 'school_year']

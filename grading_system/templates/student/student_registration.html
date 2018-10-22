@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}{{ request.user.get_full_name }} | Registration{% endblock title %}
+{% block content %}
+<div>
+    {% if enrolled_subjects %}
+    <h2>Enrolled Subjects For This Year</h2>
+    <table border="1">
+        <th>Subject Code</th>
+        <th>Description</th>
+        <th>Units</th>
+        {% for each in enrolled_subjects %}
+        <tr>
+            <td>{{ each.subject_instance.subject.subject_code }}</td>
+            <td>{{ each.subject_instance.subject.description }}</td>
+            <td>{{ each.subject_instance.subject.units }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    Empty Results...
+    {% endif %}
+
+    {% if subject_list %}
+    <h2>Available Subjects For This Year</h2>
+    <table border="1">
+        <th>Subject Code</th>
+        <th>Description</th>
+        <th>Units</th>
+        {% for each in subject_list %}
+        <tr>
+            <td>{{ each.subject.subject_code }}</td>
+            <td>{{ each.subject.description }}</td>
+            <td>{{ each.subject.units }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    Empty Results..
+    {% endif %}
+</div>
+{% endblock content %}
