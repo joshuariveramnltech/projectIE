@@ -2,17 +2,32 @@
 {% load staticfiles %}
 {% block title %}{{ request.user.get_full_name }} | Dashboard{% endblock title %}
 {% block content %}
-<h1>Welcome</h1>
-<div>
-    <a href="{% url 'logout' %}">Logout</a>
-    <a href="{% url 'account:change_password' %}">Change Password</a><br/>
-    <a href="{% url 'account:view_update_profile' %}">Profile</a> <br/>
-    {% if request.user.is_student %}
-    <span><a href="{% url 'grading_system:view_all_grades' %}">Grades</a></span> &nbsp;
-    <span><a href="{% url 'grading_system:view_schedule_student' %}">Schedule</a></span> &nbsp;
-    <span><a href="{% url 'grading_system:student_registration' %}">Registration</a></span> &nbsp;
-    {% elif request.user.is_faculty %}
-    <span><a href="{% url 'grading_system:view_assigned_subjects' %}">Subjects</a></span> &nbsp;
-    {% endif %}
+<div class="white">
+    <br><br><br><br>
+    <div class="container">
+        <div class="card">
+            <div class="card-content row">
+                <center class="col s12">
+                    <br><br>
+                </center>
+                <div class="col s8 left">
+                        {% if request.user.profile.photo.url is not None %}
+                            <img src="{{ request.user.profile.photo.url }}" style="height:200px; object-fit: cover;">
+                        {% elif request.user.gender == "female" %}
+                            <img src="{% static 'id-card.svg' %}" style="height:200px; object-fit: cover;">
+                        {% elif request.user.gender == "male" %}
+                            <img src="{% static 'id-card.svg' %}" style="height:200px; object-fit: cover;">
+                        {% endif %}
+                        <h4><b>{{ request.user.get_full_name }}</b></h4>
+                        <h6>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure, voluptate magnam optio ab aspernatur nesciunt. Nam, fugiat laborum cumque doloremque maxime assumenda ex, quidem placeat, tenetur debitis deserunt perferendis in.</h6>
+                </div>
+                <div class="col s4">
+                    <br><br><br>
+                    <h2 class="center" >Hi There! </h2>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<br><br><br><br>
 {% endblock content %}

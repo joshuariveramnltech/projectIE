@@ -3,7 +3,90 @@
 {% block title %}{{ request.user.get_full_name }} | Subjects{% endblock title %}
 
 {% block content %}
+<div class="white">
+    <br><br><br><br>
+    <div>
+        <div class="row">
+            <div class="col s3 offset-s1 card">
+                <div class="card-content row">
+                    <center><img src="{% static 'schedule.svg' %}" style="object-fit: fill; max-width: 60%"></center>
+                    <h5 class="center"><b>Assigned Subjects</b></h5>
+                    <br><b><h6><hr class="grey"></h6></b><br>
+                    
+                    <form method="GET" action="">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">search</i>
+                            <input id="id_search" type="search" name="assigned_subject_query" value="{{ request.GET.assigned_subject_query }}" />
+                            <label for="id_search">Search Subject(s)</label>
+                            <span class="helper-text">Use keywords. i.e. Subject code, units, etc.</span>
+                        </div>
+                        <div class="col s12">
+                            <input class="btn btn-large purple" type="submit" value="Search" style="width:100%" />
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+     
+            <div class="col s6 offset-s1 card">
+                <div class="card-content row">
+                        <div>
+                                {% if assigned_subjects %}
+                                <table border="1" class="highlight centered">
+                                    <th>Subject Code</th>
+                                    <th>Description</th>
+                                    <th>Year and Section</th>
+                                    <th>Semester</th>
+                                    <th>SY</th>
+                                    {% for subject_instance in assigned_subjects %}
+                                    <tr>
+                                        <td>
+                                            <a href="{% url 'grading_system:view_students_per_subject' subject_instance.id subject_instance.subject.subject_code %}">
+                                                {{ subject_instance.subject.subject_code }}
+                                            </a>
+                                        </td>
+                                        <td>{{ subject_instance.subject.description }}</td>
+                                        <td>{{ subject_instance.year_and_section }}</td>
+                                        <td>{{ subject_instance.semester }}</td>
+                                        <td>{{ subject_instance.school_year }}</td>
+                                    </tr>
+            
+                                    {% endfor %}
+                                    {% else %}
+                                    No Assigned Subjects for this Account Yet..
+                                    {% endif %}
+                                </table>
+                            </div>
+                            <div>
+                                <ul class="pagination right col s12">
+            
+                                    {% if assigned_subjects.has_previous %}
+                                    <li class="waves-effect"><a href="?assigned_subject_page=1&assigned_subject_query={{ request.GET.assigned_subject_query }}"><i
+                                                class="material-icons">first_page</i></a></li>
+                                    <li class="waves-effect"><a href="?assigned_subject_page={{ assigned_subjects.previous_page_number }}&assigned_subject_query={{ request.GET.assigned_subject_query }}"><i
+                                                class="material-icons">previous</i></a></li>
+                                    {% endif %}
+                                    <li>
+                                        {% if assigned_subjects %}
+                                        <a class="current">
+                                            Page {{ assigned_subjects.number }} of {{ assigned_subjects.paginator.num_pages }}.
+                                        </a>
+                                        {% endif %}
+                                    </li>
+                                    {% if assigned_subjects.has_next %}
+                                    <li class="waves-effect"><a href="?assigned_subject_page={{ assigned_subjects.next_page_number }}&assigned_subject_query={{ request.GET.assigned_subject_query }}"><i
+                                                class="material-icons">next</i></a></li>
+                                    <li class="waves-effect"><a href="?assigned_subject_page={{ assigned_subjects.paginator.num_pages }}&assigned_subject_query={{ request.GET.assigned_subject_query }}"><i
+                                                class="material-icons">last_page</i></a></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <a href="{% url 'account:dashboard' %}">Back</a>
+                </div>
+                
+            </div>
 
+<<<<<<< HEAD
 <h3>Assigned Subjects</h3>
 <div>
     <form method="GET" action="">
@@ -34,40 +117,13 @@
             <td>{{ subject_instance.semester }}</td>
             <td>{{ subject_instance.school_year }}</td>
         </tr>
+=======
+        </div>
+>>>>>>> UIfphase
 
-        {% endfor %}
-        {% else %}
-        No Assigned Subjects for this Account Yet..
-        {% endif %}
-    </table>
+    </div>
+    <br><br><br><br>
 </div>
-<div>
-    <ul class="pagination right col s12">
 
-        {% if assigned_subjects.has_previous %}
-        <li class="waves-effect"><a
-                href="?assigned_subject_page=1&assigned_subject_query={{ request.GET.assigned_subject_query }}"><i
-                class="material-icons">first_page</i></a></li>
-        <li class="waves-effect"><a
-                href="?assigned_subject_page={{ assigned_subjects.previous_page_number }}&assigned_subject_query={{ request.GET.assigned_subject_query }}"><i
-                class="material-icons">previous</i></a></li>
-        {% endif %}
-        <li>
-            {% if assigned_subjects %}
-            <a class="current">
-                Page {{ assigned_subjects.number }} of {{ assigned_subjects.paginator.num_pages }}.
-            </a>
-            {% endif %}
-        </li>
-        {% if assigned_subjects.has_next %}
-        <li class="waves-effect"><a
-                href="?assigned_subject_page={{ assigned_subjects.next_page_number }}&assigned_subject_query={{ request.GET.assigned_subject_query }}"><i
-                class="material-icons">next</i></a></li>
-        <li class="waves-effect"><a
-                href="?assigned_subject_page={{ assigned_subjects.paginator.num_pages }}&assigned_subject_query={{ request.GET.assigned_subject_query }}"><i
-                class="material-icons">last_page</i></a></li>
-        {% endif %}
-    </ul>
-</div>
-<a href="{% url 'account:dashboard' %}">Back</a>
+
 {% endblock content %}

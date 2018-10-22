@@ -1,8 +1,21 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block title %}SIS IE{% endblock title %}
+{% block title %}Home{% endblock title %}
 {% block content %}
+<div id="landing">
+    <!-- NAVBAR STRUCTURE -->
+    <div class="row">
+        <div class="col s1">&nbsp;</div>
+        <div class="col s9">
+            <div style="height: 30vh">
+        
+            </div>
+            <img src="{% static 'logo.svg' %}" style="height:30vh;">
+            <h3 class="white-text">Polytechnic University of the Philippines</h3>
+            <h4 class="white-text">College of Engineering | Department of Idustrial Engineering</h4>
+        </div>
+    </div>
+</div>
 
-<h1>Home Page</h1>
-<a href="{% url 'login' %}">Login</a>
+    
 {% endblock content %}
