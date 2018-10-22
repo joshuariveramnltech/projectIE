@@ -133,7 +133,7 @@ class SemesterFinalGrade(models.Model):
     semester = models.CharField(
         max_length=25, choices=SEMESTER_CHOICES, default='First Semester')
     subject_grades = models.ManyToManyField(
-        SubjectGrade, related_name='semester_subject_grades', symmetrical=False)
+        SubjectGrade, related_name='semester_subject_grades', symmetrical=False, blank=True)
     grade = models.CharField(max_length=10, blank=True, default='')
     school_year = models.CharField(max_length=25, choices=SY,
                                    default=str(datetime.now().year) + "-" + str(datetime.now().year + 1))
