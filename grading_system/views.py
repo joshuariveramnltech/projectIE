@@ -35,7 +35,8 @@ def view_schedule_student(request):
         '-semester',
         '-date_created'
     ).first()
-    latest_semester_grade = latest_semester_grade.subject_grades.all()
+    if latest_semester_grade:
+        latest_semester_grade = latest_semester_grade.subject_grades.all()
     context = {'latest_semester_grade': latest_semester_grade}
     return render(request, 'view_schedule_student.html', context)
 
