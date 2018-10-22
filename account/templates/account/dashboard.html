@@ -11,6 +11,8 @@
     <span><a href="{% url 'grading_system:view_all_grades' %}">Grades</a></span> &nbsp;
     <span><a href="#">Schedule</a></span> &nbsp;
     <span><a href="#">Registration</a></span> &nbsp;
+    {% elif request.user.is_faculty %}
+    <span><a href="{% url 'grading_system:view_assigned_subjects' %}">Subjects</a></span> &nbsp;
     {% endif %}
 </div>
 {% endblock content %}

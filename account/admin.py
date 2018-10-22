@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from .models import (
     StudentProfile, FacultyProfile,
-    StaffProfile, Year, YearAndSection
+    StaffProfile, Year, YearAndSection, CurrentState
 )
 
 # Register your models here.
@@ -17,7 +17,8 @@ admin.site.register(User, UserAdmin)
 
 @admin.register(StudentProfile)
 class StudentProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'course', 'course_description', 'year_and_section', 'status']
+    list_display = ['user', 'course',
+                    'course_description', 'year_and_section', 'status']
     search_fields = ['user__email', 'course', 'status', 'user__username']
     list_filter = ['status', 'course', 'year_and_section']
 
@@ -47,3 +48,8 @@ class YearAndSectionAdmin(admin.ModelAdmin):
     list_display = ['year', 'section']
     search_fields = ['year__year', 'year__course', 'section']
     list_filter = ['section', 'year']
+
+
+@admin.register(CurrentState)
+class CurrentStateAdmin(admin.ModelAdmin):
+    list_display = ['semester', 'school_year', 'is_enrollment']

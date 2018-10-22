@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.core.validators import RegexValidator
+from datetime import datetime
 
 # Create your models here.
 
@@ -12,7 +13,8 @@ ACCOUNT_TYPE_CHOICES = (
     ('Student', 'Student'), ('Faculty', 'Faculty'),
     ('Staff', 'Staff'), ('Administrator', 'Administrator')
 )
-SCHOLASTIC_STATUS_CHOICES = (('Regular', 'Regular'), ('Irregular', 'Irregular'))
+SCHOLASTIC_STATUS_CHOICES = (
+    ('Regular', 'Regular'), ('Irregular', 'Irregular'))
 YEAR_CHOICES = (
     ('1', '1'), ('2', '2'), ('3', '3'),
     ('4', '4'), ('5', '5')
@@ -21,15 +23,20 @@ CIVIL_STATUS_CHOICES = (('single', 'Single'), ('married', 'Married'))
 JOB_STATUS = (('Full Time', 'Full Time'), ('Part Time', 'Part Time'))
 
 COURSE_DESCRIPTION = (
-    ('Bachelor of Science in Civil Engineering', 'Bachelor of Science in Civil Engineering'),
-    ('Bachelor of Science in Computer Engineering', 'Bachelor of Science in Computer Engineering'),
+    ('Bachelor of Science in Civil Engineering',
+     'Bachelor of Science in Civil Engineering'),
+    ('Bachelor of Science in Computer Engineering',
+     'Bachelor of Science in Computer Engineering'),
     (
         'Bachelor of Science in Electronics and Communications Engineering',
         'Bachelor of Science in Electronics and Communications Engineering'
     ),
-    ('Bachelor of Science in Electrical Engineering', 'Bachelor of Science in Electrical Engineering'),
-    ('Bachelor of Science in Industrial Engineering', 'Bachelor of Science in Industrial Engineering'),
-    ('Bachelor of Science in Mechanical Engineering', 'Bachelor of Science in Mechanical Engineering'),
+    ('Bachelor of Science in Electrical Engineering',
+     'Bachelor of Science in Electrical Engineering'),
+    ('Bachelor of Science in Industrial Engineering',
+     'Bachelor of Science in Industrial Engineering'),
+    ('Bachelor of Science in Mechanical Engineering',
+     'Bachelor of Science in Mechanical Engineering'),
 )
 
 DEPARTMENT_CHOICES = (
@@ -39,9 +46,12 @@ DEPARTMENT_CHOICES = (
         'Department of Electronics and Communications Engineering',
         'Department of Electronics and Communications Engineering'
     ),
-    ('Department of Electrical Engineering', 'Department of Electrical Engineering'),
-    ('Department of Industrial Engineering', 'Department of Industrial Engineering'),
-    ('Department of Mechanical Engineering', 'Department of Mechanical Engineering'),
+    ('Department of Electrical Engineering',
+     'Department of Electrical Engineering'),
+    ('Department of Industrial Engineering',
+     'Department of Industrial Engineering'),
+    ('Department of Mechanical Engineering',
+     'Department of Mechanical Engineering'),
 )
 
 COURSE_CODE_CHOICES = (
@@ -55,7 +65,32 @@ SEMESTER_CHOICES = (
     ('Summer Semester', 'Summer Semester')
 )
 
-phone_regex = RegexValidator(regex="^\+63-\d{3}\-\d{4}\-\d{3}$", message="Format: +63-999-9999-999")
+SY = []
+
+for year in range(2010, datetime.now().year + 15):
+    SY.append(
+        (
+            str(year) + "-" + str(year + 1), str(year) + "-" + str(year + 1)
+        )
+    )
+
+phone_regex = RegexValidator(
+    regex="^\+63-\d{3}\-\d{4}\-\d{3}$", message="Format: +63-999-9999-999")
+
+
+class CurrentState(models.Model):
+    semester = models.CharField(
+        max_length=25, choices=SEMESTER_CHOICES, default='First Semester')
+    school_year = models.CharField(max_length=25, choices=SY,
+                                   default=str(datetime.now().year) + "-" + str(datetime.now().year + 1))
+    is_enrollment = models.BooleanField(
+        default=False, verbose_name='Enrollment Season?')
+
+    class Meta:
+        verbose_name_plural = 'CURRENT STATE'
+
+    def __str__(self):
+        return self.school_year + " " + self.semester
 
 
 class UserManager(BaseUserManager):
@@ -128,7 +163,8 @@ class User(AbstractBaseUser):
     gender = models.CharField(
         max_length=25, blank=True, null=True, choices=GENDER_CHOICES, default='male')
     address = models.CharField(max_length=255, blank=True, default='')
-    photo = models.ImageField(upload_to='user/profile/photo/%Y/%m/%d/', blank=True, null=True)
+    photo = models.ImageField(
+        upload_to='user/profile/photo/%Y/%m/%d/', blank=True, null=True)
     phone_number = models.CharField(
         validators=[phone_regex, ],
         max_length=20,
@@ -136,10 +172,13 @@ class User(AbstractBaseUser):
         help_text="Please use the format: +63-XXX-XXXX-XXX"
     )
     is_active = models.BooleanField(default=True, verbose_name=u"Active")
-    is_student = models.BooleanField(default=False, editable=False, verbose_name=u'Student')
-    is_faculty = models.BooleanField(default=False, editable=False, verbose_name=u'Faculty')
+    is_student = models.BooleanField(
+        default=False, editable=False, verbose_name=u'Student')
+    is_faculty = models.BooleanField(
+        default=False, editable=False, verbose_name=u'Faculty')
     is_staff = models.BooleanField(default=False, verbose_name=u"Staff")
-    is_superuser = models.BooleanField(default=False, verbose_name=u"Superuser")
+    is_superuser = models.BooleanField(
+        default=False, verbose_name=u"Superuser")
     date_joined = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -185,7 +224,8 @@ class User(AbstractBaseUser):
 
 
 class Year(models.Model):
-    course = course = models.CharField(max_length=25, choices=COURSE_CODE_CHOICES, default='BSIE')
+    course = course = models.CharField(
+        max_length=25, choices=COURSE_CODE_CHOICES, default='BSIE')
     year = models.CharField(max_length=10, choices=YEAR_CHOICES, default='1')
 
     class Meta:
@@ -197,7 +237,8 @@ class Year(models.Model):
 
 
 class YearAndSection(models.Model):
-    year = models.ForeignKey(Year, on_delete=models.DO_NOTHING, related_name='sections')
+    year = models.ForeignKey(
+        Year, on_delete=models.DO_NOTHING, related_name='sections')
     section = models.CharField(max_length=10)
 
     class Meta:
@@ -215,20 +256,23 @@ class YearAndSection(models.Model):
 
 
 class StudentProfile(models.Model):
-    user = models.OneToOneField(User, related_name='student_profile', on_delete=models.CASCADE)
-    course = models.CharField(max_length=25, choices=COURSE_CODE_CHOICES, null=True, blank=True, default='BSIE')
+    user = models.OneToOneField(
+        User, related_name='student_profile', on_delete=models.CASCADE)
+    course = models.CharField(
+        max_length=25, choices=COURSE_CODE_CHOICES, null=True, blank=True, default='BSIE')
     course_description = models.CharField(
         max_length=100, choices=COURSE_DESCRIPTION, null=True, blank=True,
         default='Bachelor of Science in Industrial Engineering'
     )
     year_and_section = models.ForeignKey(YearAndSection, on_delete=models.DO_NOTHING, related_name='students',
                                          blank=True, null=True)
-    status = models.CharField(max_length=25, choices=SCHOLASTIC_STATUS_CHOICES, default='Regular')
+    status = models.CharField(
+        max_length=25, choices=SCHOLASTIC_STATUS_CHOICES, default='Regular')
     guardian = models.CharField(max_length=50, blank=True)
     additional_information = models.TextField(blank=True)
 
     class Meta:
-        verbose_name_plural = 'Student Profiles'
+        verbose_name_plural = 'Student Profile'
 
     def __str__(self):
         return self.user.get_full_name + " " + str(self.year_and_section)
@@ -238,29 +282,34 @@ class StudentProfile(models.Model):
 
 
 class FacultyProfile(models.Model):
-    user = models.OneToOneField(User, related_name='faculty_profile', on_delete=models.CASCADE)
-    department = models.CharField(max_length=255, choices=DEPARTMENT_CHOICES, null=True, blank=True)
+    user = models.OneToOneField(
+        User, related_name='faculty_profile', on_delete=models.CASCADE)
+    department = models.CharField(
+        max_length=255, choices=DEPARTMENT_CHOICES, null=True, blank=True)
     civil_status = models.CharField(
         max_length=25, choices=CIVIL_STATUS_CHOICES, default='single')
     spouse = models.CharField(max_length=50, null=True,
                               blank=True, help_text="If Applicable", default='N/A')
     school_graduated = models.CharField(max_length=255, null=True, blank=True)
     major = models.CharField(max_length=255, null=True, blank=True)
-    status = models.CharField(max_length=25, choices=JOB_STATUS, default='Full Time', null=True, blank=True)
-    is_chairperson = models.BooleanField(default=False, verbose_name=u'Chairperson?')
+    status = models.CharField(
+        max_length=25, choices=JOB_STATUS, default='Full Time', null=True, blank=True)
+    is_chairperson = models.BooleanField(
+        default=False, verbose_name=u'Chairperson?')
     additional_information = models.TextField(blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = 'Faculty Profiles'
+        verbose_name_plural = 'Faculty Profile'
 
     def __str__(self):
         return self.user.get_full_name
 
 
 class StaffProfile(models.Model):
-    user = models.OneToOneField(User, related_name='staff_profile', on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User, related_name='staff_profile', on_delete=models.CASCADE)
     civil_status = models.CharField(
         max_length=25, choices=CIVIL_STATUS_CHOICES, default='single')
     spouse = models.CharField(max_length=50, null=True,
@@ -270,7 +319,7 @@ class StaffProfile(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = 'Staff Profiles'
+        verbose_name_plural = 'Staff Profile'
 
     def __str__(self):
         return self.user.get_full_name

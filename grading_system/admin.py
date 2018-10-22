@@ -25,6 +25,10 @@ class SubjectGradeAdmin(admin.ModelAdmin):
     list_display = [
         'student', 'subject_instance', 'semester', 'final_grade', 'grade_status'
     ]
+    search_fields = ['subject_instance__subject__subject_code', 'subject_instance__subject__description',
+                     'student__user__email', 'student__user__username', 'semester', 'grade_status'
+                     ]
+    list_filter = ['semester', 'school_year', 'grade_status']
 
 
 @admin.register(SemesterFinalGrade)

@@ -2,6 +2,9 @@
 {% load staticfiles %}
 {% block title %}Login{% endblock title %}
 {% block content %}
+{% if request.user.is_authenticated %}
+    <meta http-equiv="refresh" content="0;url={% url 'account:dashboard' %}">
+{% endif %}
 <form method="POST" action=".">
     {% csrf_token %}
     {{ form.as_p }}

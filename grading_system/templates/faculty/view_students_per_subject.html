@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students | {{ subject_instance.subject.subject_code }}</title>
+</head>
+<body>
+<div>
+    <h3>Subject: {{ subject_instance.subject.description }}</h3>
+    <p>Semester: {{ subject_instance.semester }}</p>
+    <p>SY: {{ subject_instance.school_year }}</p>
+    {% if subject_grades %}
+    <table border="1">
+        <th>Student</th>
+        <th>Year and Section</th>
+        <th>Semester</th>
+        <th>SY</th>
+        <th>Final Grade</th>
+        <th>Grade Status</th>
+        <th>Option</th>
+
+        {% for grade in subject_grades %}
+        <tr>
+            <td>{{ grade.student.user.get_full_name }}</td>
+            <td>{{ grade.student.year_and_section }}</td>
+            <td>{{ grade.semester }}</td>
+            <td>{{ grade.school_year }}</td>
+            <td>{{ grade.final_grade }}</td>
+            <td>{{ grade.grade_status }}</td>
+            <td><a href="{% url 'grading_system:view_update_grade' grade.id %}">Update</a></td>
+        </tr>
+    </table>
+    {% endfor %}
+    {% else %}
+    No Enrolled Students for this Subject yet..
+    {% endif %}
+    <a href="{% url 'grading_system:view_assigned_subjects' %}">Back</a>
+</div>
+
+</body>
+</html>
