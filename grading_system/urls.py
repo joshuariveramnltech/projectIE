@@ -14,4 +14,8 @@ urlpatterns = [
          views.view_students_per_subject, name='view_students_per_subject'),
     path('faculty/view/update/subject/grade/<int:subject_grade_id>/',
          views.view_update_grade, name='view_update_grade'),
+    path('student/view/schedule/', views.view_schedule_student,
+         name='view_schedule_student'),
+    path('student/subject/registration/',
+         views.student_registration, name='student_registration'),
 ]

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}{{ request.user.get_full_name }} | Schedule{% endblock title %}
+{% block content %}
+<div>
+    {% if latest_semester_grade %}
+    <table border="1">
+        <th>Sub. Code</th>
+        <th>Description</th>
+        <th>Schedule</th>
+        {% for each in latest_semester_grade %}
+        <tr>
+            <td>{{ each.subject_instance.subject.subject_code }}</td>
+            <td>{{ each.subject_instance.subject.description }}</td>
+            <td>{{ each.subject_instance.schedule }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <h2>Empty Result...</h2>
+    {% endif %}
+    <a href="{% url 'account:dashboard' %}">Back</a>
+</div>
+{% endblock content %}

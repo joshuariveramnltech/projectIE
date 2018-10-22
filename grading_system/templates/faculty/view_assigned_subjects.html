@@ -18,6 +18,7 @@
         <th>Subject Code</th>
         <th>Description</th>
         <th>Year and Section</th>
+        <th>Schedule</th>
         <th>Semester</th>
         <th>SY</th>
         {% for subject_instance in assigned_subjects %}
@@ -29,6 +30,7 @@
             </td>
             <td>{{ subject_instance.subject.description }}</td>
             <td>{{ subject_instance.year_and_section }}</td>
+            <td>{{ subject_instance.schedule }}</td>
             <td>{{ subject_instance.semester }}</td>
             <td>{{ subject_instance.school_year }}</td>
         </tr>

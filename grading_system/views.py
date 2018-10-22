@@ -8,11 +8,12 @@ from .models import SemesterFinalGrade
 from .forms import UpdateSubjectGrade
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-
+from datetime import datetime
 
 # Create your views here.
 
-# student view
+
+# student only
 @login_required
 def view_all_grades(request):
     if not request.user.is_student:
@@ -22,6 +23,21 @@ def view_all_grades(request):
     ).order_by('-school_year', '-semester', '-date_created')
     context = {'grades': grades}
     return render(request, 'view_all_grades.html', context)
+
+
+# student only
+@login_required
+def view_schedule_student(request):
+    if not request.user.is_student:
+        raise PermissionDenied
+    latest_semester_grade = SemesterFinalGrade.objects.all().order_by(
+        '-school_year',
+        '-semester',
+        '-date_created'
+    ).first()
+    latest_semester_grade = latest_semester_grade.subject_grades.all()
+    context = {'latest_semester_grade': latest_semester_grade}
+    return render(request, 'view_schedule_student.html', context)
 
 
 # faculty view
@@ -49,6 +65,7 @@ def view_assigned_subjects(request):
     except EmptyPage:
         assigned_subjects = assigned_subject_paginator.page(
             assigned_subject_paginator.num_pages)
+
     context['assigned_subjects'] = assigned_subjects
     return render(request, 'view_assigned_subjects.html', context)
 
@@ -97,6 +114,26 @@ def view_update_grade(request, subject_grade_id):
                'update_subject_grade_form': update_subject_grade_form
                }
     return render(request, 'view_update_grade.html', context)
+
+
+# student only
+@login_required
+def student_registration(request):
+    if not request.user.is_student:
+        raise PermissionDenied
+    subject_list = SubjectInstance.objects.filter(
+        year_and_section=request.user.student_profile.year_and_section,
+        school_year=str(datetime.now().year) + "-" +
+        str(datetime.now().year+1)
+    ).order_by('-semester')
+    enrolled_subjects = SubjectGrade.objects.filter(
+        student=request.user.student_profile,
+        school_year=str(datetime.now().year) + "-" +
+        str(datetime.now().year+1)
+    ).order_by('-subject_instance__semester')
+    context = {'subject_list': subject_list,
+               'enrolled_subjects': enrolled_subjects}
+    return render(request, 'student_registration.html', context)
 
 
 # for chairperson only
