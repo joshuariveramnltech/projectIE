@@ -3,12 +3,75 @@
 {% block title %}Login{% endblock title %}
 {% block content %}
 {% if request.user.is_authenticated %}
-    <meta http-equiv="refresh" content="0;url={% url 'account:dashboard' %}">
+<meta http-equiv="refresh" content="0;url={% url 'account:dashboard' %}">
 {% endif %}
-<form method="POST" action=".">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Login" />
-</form>
-<a href="{% url 'index' %}">Home</a>
+<div id="landing1">
+    <div class="container">
+        <div style="height:10vh">
+
+        </div>
+        
+        <div class="card green lighten-5">
+            <div id="loadingBar" class="progress center hiddendiv">
+                <div class="indeterminate"></div>
+            </div>
+            <br><br><br>
+            <div class="card-content row">
+                <div class="row">
+                    <form method="POST" action="." onsubmit="loading()">
+                        {% csrf_token %}
+                      <div class="col s4">
+                          <br>
+                        <center><img src="{% static 'phonebook.svg' %}" style="object-fit: fill; max-height: 30vh"></center>
+                      </div>
+                      <div class="col s8 row">
+                          <div class="col s12">
+                              <center><h4>Sign In</h4></center>
+                              
+                          </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input type="text" name="username" autofocus required id="id_username" class="validate">
+                            <label for="id_username">Username</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">lock_outline</i>
+                            <input type="password" name="password" required id="id_password" class="validate">
+                            <label for="id_password">Password</label>
+                            {% if form.errors %}
+                            <span class="helper-text red-text">Your username and password didn't match. Please try again.</span>
+                            {% endif %}
+                        </div>
+                        <div class="col s12">
+                            <br><br><br>
+                        </div>
+                       
+                        <div class="col s12">
+                            <button class="col s12 btn rounded  purple  white-text  hoverable" type="submit"><h6>Login </h6> </button>
+                        </div>
+                      </div>
+                        
+                       
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <br><br>
+    </div>
+</div>
+<script>
+function loading() {
+    var loginButton = document.getElementById("loginButton");
+    var loadingBar = document.getElementById("loadingBar");
+    var slideshow = document.getElementById("slideshow");
+    loadingBar.classList.remove("hiddendiv");
+    loginButton.classList.add("disabled");
+    //slideshow.classList.add("hiddendiv");
+
+}
+</script>
+
+
+
 {% endblock content %}
