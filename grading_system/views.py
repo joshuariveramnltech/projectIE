@@ -131,6 +131,42 @@ def student_registration(request):
         school_year=str(datetime.now().year) + "-" +
         str(datetime.now().year+1)
     ).order_by('-subject_instance__semester')
+    if request.method == "POST":
+        selected_subjects = request.POST.getlist('selected_subjects')
+        if selected_subjects:
+            for each in selected_subjects:
+                subject = SubjectInstance.objects.get(id=int(each))
+                SubjectGrade.objects.create(
+                    student=request.user.student_profile,
+                    subject_instance=subject,
+                    semester=subject.semester,
+                    school_year=subject.school_year,
+                )  # create subject grade instance
+                subject_grade = SubjectGrade.objects.get(
+                    student=request.user.student_profile,
+                    subject_instance=subject,
+                    semester=subject.semester,
+                    school_year=subject.school_year,
+                )  # retrieve created subject grade instance
+                try:
+                    semester_grade = SemesterFinalGrade.objects.get(
+                        student=request.user.student_profile,
+                        semester=subject.semester,
+                        school_year=subject.school_year,
+                    )
+                except SemesterFinalGrade.DoesNotExist:
+                    semester_grade = SemesterFinalGrade.objects.create(
+                        student=request.user.student_profile,
+                        semester=subject.semester,
+                        school_year=subject.school_year,
+                    )
+                    semester_grade = SemesterFinalGrade.objects.get(
+                        student=request.user.student_profile,
+                        semester=subject.semester,
+                        school_year=subject.school_year,
+                    )
+                semester_grade.subject_grades.add(subject_grade)
+            return HttpResponseRedirect(reverse('grading_system:student_registration'))
     context = {'subject_list': subject_list,
                'enrolled_subjects': enrolled_subjects}
     return render(request, 'student_registration.html', context)

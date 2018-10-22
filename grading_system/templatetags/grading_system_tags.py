@@ -1,6 +1,9 @@
 from django import template
-from grading_system.models import SemesterFinalGrade
+from grading_system.models import SemesterFinalGrade, SubjectInstance, SubjectGrade
+from django.contrib.auth import get_user_model
 import re
+
+User = get_user_model()
 
 register = template.Library()
 
@@ -35,3 +38,17 @@ def compute_gpa(semester_grade_id):
     semester_grade_instance.grade = result
     semester_grade_instance.save()
     return result
+
+
+@register.simple_tag
+def is_already_enrolled(user_id, subject_instance_id):
+    subject_instance = SubjectInstance.objects.get(id=int(subject_instance_id))
+    user = User.objects.get(id=int(user_id))
+    try:
+        SubjectGrade.objects.get(
+            subject_instance=subject_instance,
+            student=user.student_profile
+        )
+        return True
+    except SubjectGrade.DoesNotExist:
+        return False
