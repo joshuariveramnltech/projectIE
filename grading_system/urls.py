@@ -18,4 +18,10 @@ urlpatterns = [
          name='view_schedule_student'),
     path('student/subject/registration/',
          views.student_registration, name='student_registration'),
+    path('faculty/view/students/chair/',
+         views.view_all_students_chairperson, name='view_all_students_chairperson'),
+    path('faculty/student/tagging/<int:student_id>/<student_username>/',
+         views.student_tagging, name='student_tagging'),
+    path('faculty/student/untagging/<int:subject_grade_id>/<int:student_id>/<student_username>/',
+         views.remove_subject_chairperson, name='remove_subject_chairperson'),
 ]

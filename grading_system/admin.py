@@ -10,7 +10,8 @@ from .models import (
 @admin.register(GeneralSubject)
 class GeneralSubjectAdmin(admin.ModelAdmin):
     list_display = ['subject_code', 'description', 'units']
-    list_filter = ['subject_code', ]
+    search_fields = ['subject_code', 'description']
+    list_filter = ['subject_code', 'units']
 
 
 @admin.register(SubjectInstance)

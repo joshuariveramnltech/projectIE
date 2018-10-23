@@ -9,8 +9,10 @@ from .forms import UpdateSubjectGrade
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from datetime import datetime
-
+from django.contrib.auth import get_user_model
 # Create your views here.
+
+User = get_user_model()
 
 
 # student only
@@ -35,7 +37,7 @@ def view_schedule_student(request):
         '-semester',
         '-date_created'
     ).first()
-    if latest_semester_grade: # checks if there's a result in the prior query
+    if latest_semester_grade:  # checks if there's a result in the prior query
         latest_semester_grade = latest_semester_grade.subject_grades.all()
     context = {'latest_semester_grade': latest_semester_grade}
     return render(request, 'view_schedule_student.html', context)
@@ -156,7 +158,7 @@ def student_registration(request):
                         school_year=subject.school_year,
                     )
                 except SemesterFinalGrade.DoesNotExist:
-                    semester_grade = SemesterFinalGrade.objects.create(
+                    SemesterFinalGrade.objects.create(
                         student=request.user.student_profile,
                         semester=subject.semester,
                         school_year=subject.school_year,
@@ -175,8 +177,123 @@ def student_registration(request):
 
 # for chairperson only
 @login_required
-def student_tagging(request):
+def view_all_students_chairperson(request):
     if not request.user.faculty_profile.is_chairperson:
         raise PermissionDenied
-    context = {}
+    student_list = User.objects.filter(
+        is_student=True, ).order_by('-date_joined')
+    if request.user.faculty_profile.department == "Department of Industrial Engineering":
+        student_list = student_list.filter(student_profile__course='BSIE')
+    student_query = request.GET.get('student_query')
+    if student_query:
+        student_list = student_list.filter(
+            Q(first_name__icontains=student_query) |
+            Q(last_name__icontains=student_query) |
+            Q(username__icontains=student_query) |
+            Q(email__icontains=student_query)
+        ).distinct()
+    student_paginator = Paginator(student_list, 20)
+    student_page = request.GET.get('student_page')
+    try:
+        students = student_paginator.page(student_page)
+    except PageNotAnInteger:
+        students = student_paginator.page(1)
+    except EmptyPage:
+        students = student_paginator.page(student_paginator.num_pages)
+    context = {'students': students}
+    return render(request, 'view_all_students_chairperson.html', context)
+
+
+# chairperson only
+@login_required
+def student_tagging(request, student_id, student_username):
+    if not request.user.faculty_profile.is_chairperson:
+        raise PermissionDenied
+    student = User.objects.get(id=student_id)
+    student_subject_list = SubjectGrade.objects.filter(
+        student=student.student_profile).order_by('-date_created')
+    subject_list = SubjectInstance.objects.filter(
+        school_year=str(datetime.now().year) + "-" +
+        str(datetime.now().year+1)
+    ).order_by('-date_created')
+    subject_query = request.GET.get('subject_query')
+    record_query = request.GET.get('record_query')
+    if subject_query:
+        subject_list = subject_list.filter(
+            Q(subject__subject_code__icontains=subject_query) |
+            Q(subject__description__icontains=subject_query) |
+            Q(school_year__icontains=subject_query) |
+            Q(semester__icontains=subject_query)
+        ).distinct()
+    if record_query:
+        student_subject_list = student_subject_list.filter(
+            Q(subject_instance__subject__subject_code__icontains=record_query) |
+            Q(subject_instance__subject__description__icontains=record_query) |
+            Q(subject_instance__school_year__icontains=record_query) |
+            Q(subject_instance__semester__icontains=record_query)
+        ).distinct()
+    subject_paginator = Paginator(subject_list, 10)
+    subject_page = request.GET.get('subject_page')
+    try:
+        subjects = subject_paginator.page(subject_page)
+    except PageNotAnInteger:
+        subjects = subject_paginator.page(1)
+    except EmptyPage:
+        subjects = subject_paginator.page(subject_paginator.num_pages)
+    student_subject_paginator = Paginator(student_subject_list, 10)
+    student_subject_page = request.GET.get('student_subject_page')
+    try:
+        student_subjects = student_subject_paginator.page(student_subject_page)
+    except PageNotAnInteger:
+        student_subjects = student_subject_paginator.page(1)
+    except EmptyPage:
+        student_subjects = student_subject_paginator.page(
+            student_subject_paginator.num_pages)
+    if request.method == "POST":
+        sub_list = request.POST.getlist('selected_subjects')
+        for each in sub_list:
+            subject = SubjectInstance.objects.get(id=int(each))
+            SubjectGrade.objects.create(
+                student=student.student_profile,
+                subject_instance=subject,
+                semester=subject.semester,
+                school_year=subject.school_year,
+            )  # create subject grade instance
+            subject_grade = SubjectGrade.objects.get(
+                student=student.student_profile,
+                subject_instance=subject,
+                semester=subject.semester,
+                school_year=subject.school_year,
+            )  # retrieve created subject grade instance
+            try:
+                semester_grade = SemesterFinalGrade.objects.get(
+                    student=student.student_profile,
+                    semester=subject.semester,
+                    school_year=subject.school_year,
+                )
+            except SemesterFinalGrade.DoesNotExist:
+                SemesterFinalGrade.objects.create(
+                    student=student.student_profile,
+                    semester=subject.semester,
+                    school_year=subject.school_year,
+                )
+                semester_grade = SemesterFinalGrade.objects.get(
+                    student=student.student_profile,
+                    semester=subject.semester,
+                    school_year=subject.school_year,
+                )
+            semester_grade.subject_grades.add(subject_grade)
+        return HttpResponseRedirect(reverse('grading_system:student_tagging', args=[student_id, student_username]))
+    context = {'student': student, 'subjects': subjects,
+               'student_subjects': student_subjects}
     return render(request, 'student_tagging.html', context)
+
+
+# for chairperson only
+@login_required
+def remove_subject_chairperson(request, subject_grade_id, student_id, student_username):
+    if not request.user.faculty_profile.is_chairperson:
+        raise PermissionDenied
+    instance = SubjectGrade.objects.get(id=subject_grade_id)
+    instance.delete()
+    return HttpResponseRedirect(reverse('grading_system:student_tagging', args=[student_id, student_username]))
