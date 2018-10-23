@@ -3,68 +3,105 @@
 {% load grading_system_tags %}
 {% block title %}{{ request.user.get_full_name }} | Registration{% endblock title %}
 {% block content %}
-<div>
-    {% if enrolled_subjects %}
-    <h2>Enrolled Subjects For This Year</h2>
-    <table border="1">
-        <th>Subject Code</th>
-        <th>Description</th>
-        <th>Units</th>
-        <th>Semester</th>
-        <th>SY</th>
-        {% for each in enrolled_subjects %}
-        <tr>
-            <td>{{ each.subject_instance.subject.subject_code }}</td>
-            <td>{{ each.subject_instance.subject.description }}</td>
-            <td>{{ each.subject_instance.subject.units }}</td>
-            <td>{{ each.semester }}</td>
-            <td>{{ each.school_year }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    Empty Results...
-    {% endif %}
-
-    {% if subject_list %}
-    <h2>Available Subjects For This Year</h2>
-    <table border="1">
-        <th>&#9889</th>
-        <th>Subject Code</th>
-        <th>Description</th>
-        <th>Units</th>
-        <th>Semester</th>
-        <th>SY</th>
-        <form action="." method="POST" onsubmit="return confirm('Are you Sure? Once proceeded, it cannot be UNDONE.');">
-            {% csrf_token %}
-            {% for each in subject_list %}
-            <tr>
-                <td>
-                    {% is_already_enrolled request.user.id each.id as flag %}
-                    {% if flag == True %}
-                    &#9899
+<div class="green lighten-2">
+    <br><br><br>
+    <div class="container">
+        <div class="card">
+            <div class="card-content row">
+                    {% if enrolled_subjects %}
+                <div class="col s3 row">
+                    <div>
+                        <center><img src="{% static 'lamp.svg' %}" style="height:200px; object-fit: cover;"></center>
+                        <br><b><h6><hr class="grey"></h6></b><br>
+                        <h5 class="center">Subjects Enrolled</h5>
+                    </div>
+                </div>
+                <div class="col s9">
+                    
+                    <table border="1" class="highlight ">
+                        <th>Subject Code</th>
+                        <th>Description</th>
+                        <th>Units</th>
+                        <th>Semester</th>
+                        <th>SY</th>
+                        {% for each in enrolled_subjects %}
+                        <tr>
+                            <td>{{ each.subject_instance.subject.subject_code }}</td>
+                            <td>{{ each.subject_instance.subject.description }}</td>
+                            <td>{{ each.subject_instance.subject.units }}</td>
+                            <td>{{ each.semester }}</td>
+                            <td>{{ each.school_year }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
                     {% else %}
-                    <input type="checkbox" id="{{ each.id }}" name="selected_subjects" value="{{ each.id }}"/>
+                    <br>
+                    <center><img src="{% static 'cactus.svg' %}" style="height:200px; object-fit: cover;"></center>
+                    <h6 class="center">Ooooops! It seems no subject is available. <br> If this is an error contact your department.</h6>
                     {% endif %}
-                </td>
-                <td>{{ each.subject.subject_code }}</td>
-                <td>{{ each.subject.description }}</td>
-                <td>{{ each.subject.units }}</td>
-                <td>{{ each.semester }}</td>
-                <td>{{ each.school_year }}</td>
-            </tr>
-            {% endfor %}
-            <input type="submit" value="Submit" id="submit-form" style="display:none;" />
-        </form>
-    </table>
-    <br />
-    <div>
-        <button class="btn white-text"><label class="white-text" for="submit-form" tabindex="0">Add Selected Subject(s)
-                <i class="material-icons left"></i></label></button>
+                </div>
+                <div class="col s12">
+                    <br><br>
+                </div>
+                
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-content row">
+                {% if subject_list %}
+                <div class="col s3 row">
+                    <center><img src="{% static 'notes.svg' %}" style="height:200px; object-fit: cover;"></center>
+                    <br><b><h6><hr class="grey"></h6></b><br>
+                    <h5 class="center">Subjects Available for Enrollment</h5>
+                </div>
+                <div class="col s9">
+                    
+                    <table border="1" class="highlight">
+                        <th>&#9889</th>
+                        <th>Subject Code</th>
+                        <th>Description</th>
+                        <th>Units</th>
+                        <th>Semester</th>
+                        <th>SY</th>
+                        <form action="." method="POST" onsubmit="return confirm('Are you Sure? Once proceeded, it cannot be UNDONE.');">
+                            {% csrf_token %}
+                            {% for each in subject_list %}
+                            <tr>
+                                <td>
+                                    {% is_already_enrolled request.user.id each.id as flag %}
+                                    {% if flag == True %}
+                                    &#9899
+                                    {% else %}
+                                    <input type="checkbox" id="{{ each.id }}" name="selected_subjects" value="{{ each.id }}" />
+                                    {% endif %}
+                                </td>
+                                <td>{{ each.subject.subject_code }}</td>
+                                <td>{{ each.subject.description }}</td>
+                                <td>{{ each.subject.units }}</td>
+                                <td>{{ each.semester }}</td>
+                                <td>{{ each.school_year }}</td>
+                            </tr>
+                            {% endfor %}
+                            <input type="submit" value="Submit" id="submit-form" style="display:none;" />
+                        </form>
+                    </table>
+                    <br />
+                    <div>
+                        <button class="btn white-text"><label class="white-text" for="submit-form" tabindex="0">Add Selected Subject(s)<i class="material-icons left"></i></label></button>
+                    </div>
+                    {% else %}
+                    <br>
+                    <center><img src="{% static 'cactus.svg' %}" style="height:200px; object-fit: cover;"></center>
+                    <h6 class="center">Ooooops! It seems no subject is available. <br> If this is an error contact your department.</h6>
+                    {% endif %}
+                </div>
+
+               
+         
+            </div>
+        </div>
+        <br><br><br><br>
     </div>
-    {% else %}
-    Empty Results..
-    {% endif %}
-    <a href="{% url 'account:dashboard' %}">Back</a>
+    
 </div>
 {% endblock content %}

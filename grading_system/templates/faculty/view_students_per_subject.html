@@ -1,41 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Students | {{ subject_instance.subject.subject_code }}</title>
-</head>
-<body>
-<div>
-    <h3>Subject: {{ subject_instance.subject.description }}</h3>
-    <p>Semester: {{ subject_instance.semester }}</p>
-    <p>SY: {{ subject_instance.school_year }}</p>
-    {% if subject_grades %}
-    <table border="1">
-        <th>Student</th>
-        <th>Year and Section</th>
-        <th>Semester</th>
-        <th>SY</th>
-        <th>Final Grade</th>
-        <th>Grade Status</th>
-        <th>Option</th>
+{% extends 'base.html' %}
+{% load grading_system_tags %}
+{% load staticfiles %}
+{% block title %}{{ subject_instance.subject.description }} | Students{% endblock title %}
 
-        {% for grade in subject_grades %}
-        <tr>
-            <td>{{ grade.student.user.get_full_name }}</td>
-            <td>{{ grade.student.year_and_section }}</td>
-            <td>{{ grade.semester }}</td>
-            <td>{{ grade.school_year }}</td>
-            <td>{{ grade.final_grade }}</td>
-            <td>{{ grade.grade_status }}</td>
-            <td><a href="{% url 'grading_system:view_update_grade' grade.id %}">Update</a></td>
-        </tr>
-    </table>
-    {% endfor %}
-    {% else %}
-    No Enrolled Students for this Subject yet..
-    {% endif %}
-    <a href="{% url 'grading_system:view_assigned_subjects' %}">Back</a>
+{% block content %}
+<div class="green lighten-2">
+    <br><br>
+    <div class="container">
+        <div class="card">
+            <div class="card-content row">
+                <div>
+                    <img src="{% static 'pup-logo.png' %}" class="right" style="height:200px; object-fit: cover;">
+                </div>
+                <div>
+                    <h4>{{ subject_instance.subject.description }}</h4>
+                    <h6>Semester: {{ subject_instance.semester }}</h6>
+                    <h6>SY: {{ subject_instance.school_year }}</h6>
+                    {% if subject_grades %}
+                    <table border="1" class="highlight">
+                        <th>Student</th>
+                        <th>Year and Section</th>
+                        <th>Semester</th>
+                        <th>SY</th>
+                        <th>Final Grade</th>
+                        <th>Grade Status</th>
+                        <th>Option</th>
+        
+                        {% for grade in subject_grades %}
+                        <tr>
+                            <td>{{ grade.student.user.get_full_name }}</td>
+                            <td>{{ grade.student.year_and_section }}</td>
+                            <td>{{ grade.semester }}</td>
+                            <td>{{ grade.school_year }}</td>
+                            <td>{{ grade.final_grade }}</td>
+                            <td>{{ grade.grade_status }}</td>
+                            <td><a href="{% url 'grading_system:view_update_grade' grade.id %}">Update</a></td>
+                        </tr>
+                    </table>
+                    {% endfor %}
+                    {% else %}
+                    <br>
+                    <center><img src="{% static 'industry.svg' %}" style="height:200px; object-fit: cover;"></center>
+                    <h6 class="center">Ooooops! It seems no students is/are currently enrolled to this subject. <br> If this is an error contact your department.</h6>
+                    {% endif %}
+                    <a href="{% url 'grading_system:view_assigned_subjects' %}">Back</a>
+                </div>
+                <br><br>
+            </div>
+        </div>
+      
+
+    </div>
+    <br><br><br>
 </div>
-
-</body>
-</html>
+{% endblock content %}

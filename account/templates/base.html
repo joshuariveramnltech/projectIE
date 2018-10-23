@@ -97,6 +97,9 @@
         .input-field .prefix.active {
             color: #9c27b0;
         }
+        a{
+          color: #9c27b0;
+        }
     </style>
 </head>
 <body>
@@ -104,14 +107,14 @@
 			{% if request.user.is_student %}
 			<nav class="z-depth-0 white navbar-material">
 				<div class="nav-wrapper green-text" >
-						<a class="brand-logo black-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 								<img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp; <span class="right" >PUP | Department of Industrial Engineering</span>
 						</a>
 					<ul class="right hide-on-med-and-down">
-					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat black-text center">Dashboard</a></li>
-          <li><a href="{% url 'index' %}" class="nav-link btn-flat black-text center">Schedule</a></li>
-          <li><a href="{% url 'grading_system:view_all_grades' %}" class="nav-link btn-flat black-text center">Grades</a></li>
-					<li><a href="{% url 'grading_system:student_registration' %}" class="nav-link btn-flat black-text center">Registration</a></li>
+					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Dashboard</a></li>
+          <li><a href="{% url 'grading_system:view_schedule_student' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Schedule</a></li>
+          <li><a href="{% url 'grading_system:view_all_grades' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Grades</a></li>
+					<li><a href="{% url 'grading_system:student_registration' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Registration</a></li>
 					<li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
 					</ul>
 				</div>
@@ -119,12 +122,12 @@
 			{% elif request.user.is_faculty %}
 			<nav class="z-depth-0  white navbar-material  ">
 				<div class="nav-wrapper green-text" >
-					<a class="brand-logo black-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp; <span class="right" >PUP | Department of Industrial Engineering</span>
 					</a>
 					<ul class="right hide-on-med-and-down">
-					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat black-text center">Dashboard</a></li>
-          <li><a href="{% url 'grading_system:view_assigned_subjects' %}" class="nav-link btn-flat black-text center">SUBJECTS</a></li> 
+					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Dashboard</a></li>
+          <li><a href="{% url 'grading_system:view_assigned_subjects' %}" class="nav-link btn-flat  grey-text text-darken-3 center">SUBJECTS</a></li> 
 					<li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
 					</ul>
 				</div>
@@ -132,7 +135,7 @@
 			{% else %}
 			<nav class="z-depth-0 white navbar-material  ">
 				<div class="nav-wrapper green-text" >
-					<a class="brand-logo black-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp; <span class="right" >PUP | Department of Industrial Engineering</span>
 					</a>
 					<ul class="right hide-on-med-and-down">
@@ -146,7 +149,7 @@
 		{% else %}					
 		<nav class="z-depth-0 white navbar-material  ">
 			<div class="nav-wrapper green-text" >
-					<a class="brand-logo black-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							<img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp; <span class="right" >PUP | Department of Industrial Engineering</span>
 					</a>
 				<ul class="right hide-on-med-and-down">
@@ -187,7 +190,9 @@
 		
 			</div>
 		</div>
-	</footer>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
 
     <!-- Compiled and minified JavaScript -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -197,7 +202,24 @@
 				var instances = M.Dropdown.init(elems, {
 				});
 			  });
-	</script>
+        document.addEventListener('DOMContentLoaded', function () {
+      var elems = document.querySelectorAll('select');
+      var instances = M.FormSelect.init(elems, {});
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+      var elems = document.querySelectorAll('.modal');
+      var instances = M.Modal.init(elems, {
+
+      });
+    });
+  </script>
+   {% if messages %}
+   <script>
+     $(function () {
+       window.onload = $('#submit_btn').click();
+     });
+   </script>
+   {% endif %}
 
 </body>
 </html>
