@@ -11,8 +11,8 @@
                     <br><br>
                 </center>
                 <div class="col s8 left">
-                        {% if request.user.profile.photo.url is not None %}
-                            <img src="{{ request.user.profile.photo.url }}" style="height:200px; object-fit: cover;">
+                        {% if request.user.photo.url is not None %}
+                            <img src="{{ request.user.photo.url }}" class="circle" style="height:200px;  object-fit: cover;">
                         {% elif request.user.gender == "female" %}
                             <img src="{% static 'id-card.svg' %}" style="height:200px; object-fit: cover;">
                         {% elif request.user.gender == "male" %}
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col s4">
                     <br><br><br>
-                    <h2 class="center" >Hi There! </h2>
+                    <h2 class="center" >Hi! </h2>
                 </div>
             </div>
         </div>

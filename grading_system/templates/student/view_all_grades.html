@@ -7,6 +7,8 @@
 <div class="green lighten-2">
     <br><br><br>
     <div class="container">
+        {% if grades %}
+        {% for grade in grades %}
         <div class="card z-depth-4">
             <div class="card-content row">
                 <div class="col s3">
@@ -21,17 +23,17 @@
                     <h6>Course Description: {{ request.user.student_profile.course_description }}</h6>
                     <h6>Semester: {{ grade.semester }}</h6>
                     <h6>Status: {{ request.user.student_profile.status }}</h6>
+                    <h6>GPA: {% compute_gpa grade.id %}</h6>
                     
                 </div>
                 <div class="col s12">
                         <br><b><h6><hr class="grey"></h6></b><br>
                 </div>
                 <div class="col s12">
-                        {% if grades %}
-                        {% for grade in grades %}
+                        
                         <div>
                 
-                            <h6>GPA: {% compute_gpa grade.id %}</h6>
+                            
                          
                             <div>
                                 <table border="1" class="highlight">
@@ -56,16 +58,16 @@
                                 </table>
                             </div>
                         </div>
-                        {% endfor %}
-                        {% else %}
-                        No Enrolled Subjects for this Account....
-                        {% endif %}
+                        
                 </div>
 
             </div>
             <br><br>
         </div>
-
+        {% endfor %}
+        {% else %}
+        No Enrolled Subjects for this Account....
+        {% endif %}
 
         
     </div>
