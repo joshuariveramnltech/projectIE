@@ -103,7 +103,7 @@
     </style>
 </head>
 <body>
-		{% if request.user.is_authenticated %}
+        {% if request.user.is_authenticated %}
 			{% if request.user.is_student %}
 			<nav class="z-depth-0 white navbar-material">
 				<div class="nav-wrapper green-text" >
@@ -127,8 +127,11 @@
 					</a>
 					<ul class="right hide-on-med-and-down">
 					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Dashboard</a></li>
-          <li><a href="{% url 'grading_system:view_assigned_subjects' %}" class="nav-link btn-flat  grey-text text-darken-3 center">SUBJECTS</a></li> 
-					<li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
+          <li><a href="{% url 'grading_system:view_assigned_subjects' %}" class="nav-link btn-flat  grey-text text-darken-3 center">SUBJECTS</a></li>
+          {% if request.user.faculty_profile.is_chairperson %}
+          <li><a href="{% url 'grading_system:view_all_students_chairperson' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Tagging</a></li>  
+          {% endif %}          
+          <li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
 					</ul>
 				</div>
 			</nav>
@@ -140,8 +143,11 @@
 					</a>
 					<ul class="right hide-on-med-and-down">
 					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat black-text center">Dashboard</a></li>
-					<li><a href="{% url 'index' %}" class="nav-link btn-flat black-text center">Home</a></li>
-					<li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
+                    <li><a href="{% url 'index' %}" class="nav-link btn-flat black-text center">Home</a></li>
+                    {% if request.user.is_superuser %}
+                    <li><a href="/admin/" class="nav-link btn-flat black-text center">I.E Administration</a></li>
+                    {% endif %}
+                    <li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
 					</ul>
 				</div>
 			</nav>
