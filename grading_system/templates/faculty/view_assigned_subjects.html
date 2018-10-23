@@ -3,7 +3,7 @@
 {% block title %}{{ request.user.get_full_name }} | Subjects{% endblock title %}
 
 {% block content %}
-<div class="white">
+<div class="green lighten-2">
     <br><br><br><br>
     <div>
         <div class="row">
@@ -36,6 +36,7 @@
                                     <th>Subject Code</th>
                                     <th>Description</th>
                                     <th>Year and Section</th>
+                                    <th>Schedule</th>
                                     <th>Semester</th>
                                     <th>SY</th>
                                     {% for subject_instance in assigned_subjects %}
@@ -47,6 +48,7 @@
                                         </td>
                                         <td>{{ subject_instance.subject.description }}</td>
                                         <td>{{ subject_instance.year_and_section }}</td>
+                                        <td>{{ subject_instance.schedule }}</td>
                                         <td>{{ subject_instance.semester }}</td>
                                         <td>{{ subject_instance.school_year }}</td>
                                     </tr>
@@ -86,40 +88,6 @@
                 
             </div>
 
-<<<<<<< HEAD
-<h3>Assigned Subjects</h3>
-<div>
-    <form method="GET" action="">
-        <input type="search" name="assigned_subject_query" placeholder="Search Subject"
-               value="{{ request.GET.assigned_subject_query }}"/>
-        <input type="submit" value="Search"/>
-    </form>
-</div>
-<div>
-    {% if assigned_subjects %}
-    <table border="1">
-        <th>Subject Code</th>
-        <th>Description</th>
-        <th>Year and Section</th>
-        <th>Schedule</th>
-        <th>Semester</th>
-        <th>SY</th>
-        {% for subject_instance in assigned_subjects %}
-        <tr>
-            <td>
-                <a href="{% url 'grading_system:view_students_per_subject' subject_instance.id subject_instance.subject.subject_code %}">
-                    {{ subject_instance.subject.subject_code }}
-                </a>
-            </td>
-            <td>{{ subject_instance.subject.description }}</td>
-            <td>{{ subject_instance.year_and_section }}</td>
-            <td>{{ subject_instance.schedule }}</td>
-            <td>{{ subject_instance.semester }}</td>
-            <td>{{ subject_instance.school_year }}</td>
-        </tr>
-=======
-        </div>
->>>>>>> UIfphase
 
     </div>
     <br><br><br><br>

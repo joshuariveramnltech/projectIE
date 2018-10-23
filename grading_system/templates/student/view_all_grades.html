@@ -1,47 +1,75 @@
 {% extends 'base.html' %}
-{% load  grading_system_tags %}
+{% load grading_system_tags %}
 {% load staticfiles %}
 {% block title %}{{ request.user.get_full_name }} | Grades{% endblock title %}
 
 {% block content %}
-<div>
-    <h4>Name: {{ request.user.get_full_name }} &nbsp; ({{ request.user.username }})</h4>
-     <a href="{% url 'account:dashboard' %}">Back</a>
-    {% if grades %}
-    {% for grade in grades %}
-    <div>
-        <p>School Year: {{ grade.school_year }}</p>
-        <p>Course Code: {{ request.user.student_profile.course }}</p>
-        <p>Course Description: {{ request.user.student_profile.course_description }}</p>
-        <p>Semester: {{ grade.semester }}</p>
-        <p>Status: {{ request.user.student_profile.status }}</p>
-        <p>GPA: {% compute_gpa grade.id %}</p>
-        <div>
-            <table border="1">
-                <th>Subject Code</th>
-                <th>Subject Description</th>
-                <th>Instructor</th>
-                <th>Units</th>
-                <th>Sect. Code</th>
-                <th>Final Grade</th>
-                <th>Grade Status</th>
-                {% for subject_grade in grade.subject_grades.all %}
-                <tr>
-                    <td>{{ subject_grade.subject_instance.subject.subject_code }}</td>
-                    <td>{{ subject_grade.subject_instance.subject.description }}</td>
-                    <td>{{ subject_grade.subject_instance.instructor }}</td>
-                    <td>{{ subject_grade.subject_instance.subject.units }}</td>
-                    <td>{{ subject_grade.subject_instance.year_and_section }}</td>
-                    <td>{{ subject_grade.final_grade }}</td>
-                    <td>{{ subject_grade.grade_status }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+<div class="green lighten-2">
+    <br><br><br>
+    <div class="container">
+        <div class="card z-depth-4">
+            <div class="card-content row">
+                <div class="col s3">
+                    <br>
+                    <img src="{% static 'pup-logo.png' %}" style="height:200px; object-fit: cover;">
+                </div>
+                <div class="col s9">
+                    <h5 class="right green-text text-darken-4"><b>Grades</b></h5>
+                    <h4><b>{{ request.user.get_full_name }}</b></h4>
+                    <h6>School Year: {{ grade.school_year }}</h6>
+                    <h6>Course Code: {{ request.user.student_profile.course }}</h6>
+                    <h6>Course Description: {{ request.user.student_profile.course_description }}</h6>
+                    <h6>Semester: {{ grade.semester }}</h6>
+                    <h6>Status: {{ request.user.student_profile.status }}</h6>
+                    
+                </div>
+                <div class="col s12">
+                        <br><b><h6><hr class="grey"></h6></b><br>
+                </div>
+                <div class="col s12">
+                        {% if grades %}
+                        {% for grade in grades %}
+                        <div>
+                
+                            <h6>GPA: {% compute_gpa grade.id %}</h6>
+                         
+                            <div>
+                                <table border="1" class="highlight">
+                                    <th>Subject Code</th>
+                                    <th>Subject Description</th>
+                                    <th>Instructor</th>
+                                    <th>Units</th>
+                                    <th>Sect. Code</th>
+                                    <th>Final Grade</th>
+                                    <th>Grade Status</th>
+                                    {% for subject_grade in grade.subject_grades.all %}
+                                    <tr>
+                                        <td>{{ subject_grade.subject_instance.subject.subject_code }}</td>
+                                        <td>{{ subject_grade.subject_instance.subject.description }}</td>
+                                        <td>{{ subject_grade.subject_instance.instructor }}</td>
+                                        <td>{{ subject_grade.subject_instance.subject.units }}</td>
+                                        <td>{{ subject_grade.subject_instance.year_and_section }}</td>
+                                        <td>{{ subject_grade.final_grade }}</td>
+                                        <td>{{ subject_grade.grade_status }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        No Enrolled Subjects for this Account....
+                        {% endif %}
+                </div>
+
+            </div>
+            <br><br>
         </div>
+
+
+        
     </div>
-    {% endfor %}
-    {% else %}
-        No Enrolled Subjects for this Account....
-    {% endif %}
+    <br><br><br><br><br>
 </div>
+
 {% endblock content %}
