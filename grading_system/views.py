@@ -175,8 +175,8 @@ def student_registration(request):
 
 # for chairperson only
 @login_required
-def assigned_faculty_to_subject(request):
+def student_tagging(request):
     if not request.user.faculty_profile.is_chairperson:
         raise PermissionDenied
     context = {}
-    return render(request, 'assigned_faculty_to_subject.html', context)
+    return render(request, 'student_tagging.html', context)
