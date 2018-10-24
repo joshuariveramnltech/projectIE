@@ -2,14 +2,12 @@
 {% load staticfiles %}
 {% block title %}{{ request.user.get_full_name }} | Dashboard{% endblock title %}
 {% block content %}
-<div class="green lighten-2">
+<div>
     <br><br><br><br>
     <div class="container">
-        <div class="card">
+        <div class="card hoverable">
             <div class="card-content row">
-                <center class="col s12">
-                    <br><br>
-                </center>
+               
                 <div class="col s8 left">
                         {% if request.user.photo.url is not None %}
                             <img src="{{ request.user.photo.url }}" class="circle" style="height:200px;  object-fit: cover;">
@@ -19,11 +17,16 @@
                             <img src="{% static 'id-card.svg' %}" style="height:200px; object-fit: cover;">
                         {% endif %}
                         <h4><b>{{ request.user.get_full_name }}</b></h4>
-                        <h6>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure, voluptate magnam optio ab aspernatur nesciunt. Nam, fugiat laborum cumque doloremque maxime assumenda ex, quidem placeat, tenetur debitis deserunt perferendis in.</h6>
+                        {% if request.user.faculty_profile.is_chairperson %}
+                        <h6>Chairperson</h6>
+                        {% endif %}
+                        <h6 class="grey-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure, voluptate magnam optio ab aspernatur nesciunt. Nam, fugiat laborum cumque doloremque maxime assumenda ex, quidem placeat, tenetur debitis deserunt perferendis in.</h6>
                 </div>
-                <div class="col s4">
-                    <br><br><br>
-                    <h2 class="center" >Hi! </h2>
+                <div class="col s4 purple hoverable" style="height:100%;">
+                    <br><br><br><br><br>
+                    <h2 class="center white-text" >Hi!</h2>
+                   <br><br>
+                    <br><br><br><br>
                 </div>
             </div>
         </div>

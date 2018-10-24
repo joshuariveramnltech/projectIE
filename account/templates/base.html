@@ -1,6 +1,7 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
     <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
@@ -19,41 +20,36 @@
         nav {
             height: 45px;
             line-height: 45px;
-            }
-        
-            nav i,
-            nav [class^="mdi-"],
-            nav [class*="mdi-"],
-            nav i.material-icons {
-            height: 55px;
-            line-height: 55px;
-            }
-        
-            nav .button-collapse i {
-            height: 55px;
-            line-height: 35px;
-            }
-        
-            nav .brand-logo {
-            font-size: 1.3rem;
-            }
-        
-            .navbar-material .nav-wrapper .brand-logo img {
+        }
+
+        nav i,nav [class^="mdi-"],nav [class*="mdi-"],nav i.material-icons {
             height: 45px;
-            }
-        
-            @media only screen and (min-width: 601px) {
-        
-            nav,
-            nav .nav-wrapper i,
-            nav a.button-collapse,
-            nav a.button-collapse i {
+            line-height: 45px;
+        }
+
+        nav .button-collapse i {
+            height: 45px;
+            line-height: 45px;
+        }
+
+        nav .brand-logo {
+            font-size: 1.3rem;
+        }
+
+        .navbar-material .nav-wrapper .brand-logo img {
+            height: 45px;
+        }
+
+        @media only screen and (min-width: 601px) {
+
+            nav,nav .nav-wrapper i,nav a.button-collapse,nav a.button-collapse i {
                 height: 45px;
                 line-height: 45px;
             }
-            }
+        }
+
         #landing {
-            height: 94vh;
+            height: 100vh;
             background-image: url('{% static "purp.png" %}');
             background-position: center;
             background-size: cover;
@@ -61,171 +57,190 @@
             background-attachment: fixed;
             z-index: -1;
         }
-        #landing1 {
-            height: 90vh;
-            background-image: url('{% static "space.jpg" %}');
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            z-index: -1;
-        }
+
         /* label color */
         .input-field label {
             color: #bdbdbd;
         }
+
         /* label focus color */
-        .input-field input[type=text]:focus + label {
+        .input-field input[type=text]:focus+label {
             color: #9c27b0;
         }
+
         /* label underline focus color */
         .input-field input[type=text]:focus {
             border-bottom: 1px solid #bdbdbd;
             box-shadow: 0 1px 0 0 #000;
         }
+
         /* valid color */
         .input-field input[type=text].valid {
             border-bottom: 1px solid #9c27b0;
             box-shadow: 0 1px 0 0 #9c27b0;
         }
+
         /* invalid color */
         .input-field input[type=text].invalid {
             border-bottom: 1px solid #000;
             box-shadow: 0 1px 0 0 #000;
         }
+
         /* icon prefix focus color */
         .input-field .prefix.active {
             color: #9c27b0;
         }
-        a{
-          color: #9c27b0;
+        a {
+            color: #9c27b0;
         }
     </style>
 </head>
-<body>
-        {% if request.user.is_authenticated %}
-			{% if request.user.is_student %}
-			<nav class="z-depth-0 white navbar-material">
-				<div class="nav-wrapper green-text" >
-						<a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp; <span class="right" >PUP | Department of Industrial Engineering</span>
-						</a>
-					<ul class="right hide-on-med-and-down">
-					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Dashboard</a></li>
-          <li><a href="{% url 'grading_system:view_schedule_student' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Schedule</a></li>
-          <li><a href="{% url 'grading_system:view_all_grades' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Grades</a></li>
-					<li><a href="{% url 'grading_system:student_registration' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Registration</a></li>
-					<li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
-					</ul>
-				</div>
-			</nav>			
-			{% elif request.user.is_faculty %}
-			<nav class="z-depth-0  white navbar-material  ">
-				<div class="nav-wrapper green-text" >
-					<a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp; <span class="right" >PUP | Department of Industrial Engineering</span>
-					</a>
-					<ul class="right hide-on-med-and-down">
-					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Dashboard</a></li>
-          <li><a href="{% url 'grading_system:view_assigned_subjects' %}" class="nav-link btn-flat  grey-text text-darken-3 center">SUBJECTS</a></li>
-          {% if request.user.faculty_profile.is_chairperson %}
-          <li><a href="{% url 'grading_system:view_all_students_chairperson' %}" class="nav-link btn-flat  grey-text text-darken-3 center">Tagging</a></li>  
-          {% endif %}          
-          <li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
-					</ul>
-				</div>
-			</nav>
-			{% else %}
-			<nav class="z-depth-0 white navbar-material  ">
-				<div class="nav-wrapper green-text" >
-					<a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp; <span class="right" >PUP | Department of Industrial Engineering</span>
-					</a>
-					<ul class="right hide-on-med-and-down">
-					<li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat black-text center">Dashboard</a></li>
+
+<body id="main">
+    <ul id='accountDropdown' class='dropdown-content'>
+        <li> <a href="" class="nav-link center black-text"><i class="material-icons black-text left">account_circle</i>{{request.user.get_full_name }}</a></li>
+        <li> <a href="" class="nav-link center black-text"><i class="material-icons black-text left">vpn_key</i>Change Password</a></li>
+        <li> <a class="nav-link black-text center" href="{% url 'account:view_update_profile' %}"><i class="material-icons">settings</i>Settings</a></li>
+        <li> <a href="{% url 'logout' %}" class="nav-link red accent white-text center hoverable"><i class="material-icons left">exit_to_app</i>Logout</a></li>
+    </ul>
+    {% if request.user.is_authenticated %}
+    {% if request.user.is_student %}
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper white green-text">
+                <a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp;
+                    <span class="right">PUP | Department of Industrial Engineering</span>
+                </a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="{% url 'account:dashboard' %}" class="nav-link t  grey-text text-darken-3 center tooltipped" data-tooltip="Dashboard"><b><i class="material-icons">personal_video</i></b></a></li>
+                    <li><a href="{% url 'grading_system:view_schedule_student' %}" class="nav-link  grey-text text-darken-3 center tooltipped" data-tooltip="Schedule"><b><i class="material-icons">schedule</i></b></a></li>
+                    <li><a href="{% url 'grading_system:view_all_grades' %}" class="nav-link  grey-text text-darken-3 center tooltipped" data-tooltip="View Grades"><b><i class="material-icons">description</i></b></a></li>
+                    <li><a href="{% url 'grading_system:student_registration' %}" class="nav-link   grey-text text-darken-3 center tooltipped" data-tooltip="Registration"><b><i class="material-icons">school</i></b></a></li>
+                    <li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    {% elif request.user.is_faculty %}
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper white green-text">
+                <a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp;
+                    <span class="right">PUP | Department of Industrial Engineering</span>
+                </a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="{% url 'account:dashboard' %}" class="nav-link  grey-text text-darken-3 center tooltipped" data-tooltip="Dashboard"><b><i class="material-icons">personal_video</i></b> </a></li>
+                    <li><a href="{% url 'grading_system:view_assigned_subjects' %}" class="nav-link  grey-text text-darken-3 center tooltipped" data-tooltip="Subjects"><b><i class="material-icons">book</i></b></a></li>
+                    {% if request.user.faculty_profile.is_chairperson %}
+                    <li><a href="{% url 'grading_system:view_all_students_chairperson' %}" class="grey-text text-darken-3 tooltipped" data-tooltip="Tagging"><b><i class="material-icons">assignment_ind</i></b></a></li>
+                    {% endif %}
+                    <li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center"
+                            data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    {% else %}
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper white">
+                <a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp;
+                    <span class="right">PUP | Department of Industrial Engineering</span>
+                </a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="{% url 'account:dashboard' %}" class="nav-link btn-flat black-text center">Dashboard</a></li>
                     <li><a href="{% url 'index' %}" class="nav-link btn-flat black-text center">Home</a></li>
                     {% if request.user.is_superuser %}
                     <li><a href="/admin/" class="nav-link btn-flat black-text center">I.E Administration</a></li>
                     {% endif %}
-                    <li> <a href="" class="nav-link dropdown-trigger green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{ request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
-					</ul>
-				</div>
-			</nav>
-			{% endif %}
-		{% else %}					
-		<nav class="z-depth-0 white navbar-material  ">
-			<div class="nav-wrapper green-text" >
-					<a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp; <span class="right" >PUP | Department of Industrial Engineering</span>
-					</a>
-				<ul class="right hide-on-med-and-down">
-				<li><a href="{% url 'index' %}" class="nav-link btn-flat black-text"><h6 class="center">Home</h6> </a></li>
-				<li><a href="{% url 'login' %}" class="nav-link btn-flat balck-text"><h6 class="center">SIGN-IN</h6></a></li>
-				</ul>
-			</div>
-		</nav>						
-		{% endif %}
+                    <li> <a href="" class="nav-link dropdown-trigger btn green darken-4 center white-text center" data-target='accountDropdown'><i class="material-icons white-text left">account_circle</i>{{request.user.get_full_name }}<i class="material-icons black-text right">expand_more</i></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper white green-text">
+                <a class="brand-logo grey-text text-darken-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="{% static 'pup-logo.png' %}" alt="" style="max-height: 40px; margin-top:2.5px"> &nbsp;
+                    <span class="right">PUP | Department of Industrial Engineering</span>
+                </a>
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="{% url 'index' %}" class="nav-link btn-flat black-text">
+                            <h6 class="center">Home</h6>
+                        </a></li>
+                    <li><a href="{% url 'login' %}" class="nav-link btn-flat balck-text">
+                            <h6 class="center">SIGN-IN</h6>
+                        </a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    {% endif %}
 
+    <!-- Content Goes Here -->
+    <div id="contents" class="grey lighten-3 scale-transition scale-in" style="margin-top:-20px">
+            {% block content %}{% endblock content %}
+    </div>
 
-		<ul id='accountDropdown' class='dropdown-content'>
-			<li> <a href="" class="nav-link center black-text"><i class="material-icons black-text left">account_circle</i>{{ request.user.get_full_name }}</a></li>
-			<li> <a href="" class="nav-link center black-text"><i class="material-icons black-text left">vpn_key</i>Change Password</a></li>
-			<li> <a class="nav-link black-text center" href="{% url 'account:view_update_profile' %}"><i class="material-icons">settings</i>Settings</a></li>
-			<li> <a href="{% url 'logout' %}" class="nav-link red accent white-text center hoverable"><i class="material-icons left">exit_to_app</i>Logout</a></li>
-		</ul>
-		<ul id='accountDropdown' class='dropdown-content'>
-			<li> <a href="" class="nav-link center black-text"><i class="material-icons black-text left">account_circle</i>{{ request.user.get_full_name }}</a></li>
-			<li> <a href="" class="nav-link center black-text"><i class="material-icons black-text left">vpn_key</i>Change Password</a></li>
-			<li> <a class="nav-link black-text center" href="{% url 'account:view_update_profile' %}"><i class="material-icons">settings</i>Settings</a></li>
-			<li> <a href="{% url 'logout' %}" class="nav-link red accent white-text center hoverable"><i class="material-icons left">exit_to_app</i>Logout</a></li>
-	    </ul>
-    {% block content %}{% endblock content %}    
-	<footer class="page-footer white black-text">
-		<div class="container">
-			<div class="row">
-			<div class="col l6 s12">
-				<h5 class="">Polytechnic University of the Philippines College of Engineering</h5>
-				<p class=" text-lighten-4">Department of Industrial Engineering</p>
-			</div>
-			
-			</div>
-		</div>
-		<div class="footer-copyright">
-			<div class="container black-text">
-			© 2018 PUP | CE | IE 
-		
-			</div>
-		</div>
-  </footer>
-  <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    <footer id="foots" class="page-footer grey lighten-2 grey-text text-darken-3">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="">Polytechnic University of the Philippines College of Engineering</h5>
+                    <p class=" text-lighten-4">Department of Industrial Engineering</p>
+                </div>
+
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container  grey-text text-darken-2">
+                © 2018 PUP | CE | IE
+            </div>
+        </div>
+    </footer>
+   
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
     crossorigin="anonymous"></script>
-
     <!-- Compiled and minified JavaScript -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-	<script>
-			document.addEventListener('DOMContentLoaded', function () {
-				var elems = document.querySelectorAll('.dropdown-trigger');
-				var instances = M.Dropdown.init(elems, {
-				});
-			  });
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
-      var elems = document.querySelectorAll('select');
-      var instances = M.FormSelect.init(elems, {});
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-      var elems = document.querySelectorAll('.modal');
-      var instances = M.Modal.init(elems, {
+            var elems = document.querySelectorAll('.dropdown-trigger');
+            var instances = M.Dropdown.init(elems, {
+                hover: 'true'
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems, {});
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems, {
 
-      });
-    });
-  </script>
-   {% if messages %}
-   <script>
-     $(function () {
-       window.onload = $('#submit_btn').click();
-     });
-   </script>
-   {% endif %}
-
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.tooltipped');
+            var instances = M.Tooltip.init(elems, {
+              
+            });
+        });
+    </script>
+    {% if messages %}
+    <script>
+        $(function () {
+            window.onload = $('#submit_btn').click();
+        });
+    </script>
+    {% endif %}
+  
 </body>
+
 </html>
