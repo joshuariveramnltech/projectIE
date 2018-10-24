@@ -183,16 +183,15 @@
                                     <td><a href="{% url 'grading_system:class_list_pdf' subject_instance.id subject_instance.subject.subject_code %}" target="_blank">Class List</a></td>
                                 </tr>
                                 {% endfor %}
-                                <input type="submit" value="Submit" id="submit-form" class="hiddendiv" />
+                                <button type="submit" value="Submit" id="primaryButton" class="hiddendiv"></button>
                             </form>
                         </table>
                         <br>
-                        <div>
-                            <button class="btn white-text">
-                                <label class="white-text" for="submit-form" tabindex="0">
-                                    Submit <i class="material-icons left">add</i></label>
+                      
+                            <button class="btn btn-large white-text purple left" onclick="document.getElementById('primaryButton').click()" style="width:30%">
+                                    Add Selected Subject(s)<i class="material-icons left">add</i>
                             </button>
-                        </div>
+                     
                         <div>
                             <ul class="pagination right">
                 

@@ -1,27 +1,55 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+     <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <title>Schedule | {{ current_school_year }}</title>
+    <style>
+         @page {
+                margin: .3cm 0cm;
+            }
+    </style>
 </head>
 <body>
-<table border="1">
-    <th>Subject Code</th>
-    <th>Description</th>
-    <th>Year and Section</th>
-    <th>Schedule</th>
-    <th>Semester</th>
-    <th>SY</th>
-    {% for subject_instance in assigned_subjects_per_year %}
-    <tr>
-        <td>{{ subject_instance.subject.subject_code }}</td>
-        <td>{{ subject_instance.subject.description }}</td>
-        <td>{{ subject_instance.year_and_section }}</td>
-        <td>{{ subject_instance.schedule }}</td>
-        <td>{{ subject_instance.semester }}</td>
-        <td>{{ subject_instance.school_year }}</td>
-    </tr>
-    {% endfor %}
-</table>
+    <div class="card">
+        <div class="card-content">
+            <center><h6>Assigned Schedule for {{ current_school_year }}</h6></center>
+            <table border="1" class="centered striped" style="font-size:8px">
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Description</th>
+                            <th>Year and Section</th>
+                            <th>Schedule</th>
+                            <th>Semester</th>
+                            <th>SY</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for subject_instance in assigned_subjects_per_year %}
+                        <tr>
+                            <td>{{ subject_instance.subject.subject_code }}</td>
+                            <td>{{ subject_instance.subject.description }}</td>
+                            <td>{{ subject_instance.year_and_section }}</td>
+                            <td>{{ subject_instance.schedule }}</td>
+                            <td>{{ subject_instance.semester }}</td>
+                            <td>{{ subject_instance.school_year }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    
+                </table>
+                <div class="grey" style="font-size:8px; width:100%">
+                    ***nothing follows.......
+                </div>
+
+        </div>
+    </div>
+
+
 </body>
 </html>
