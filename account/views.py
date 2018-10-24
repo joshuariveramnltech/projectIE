@@ -34,7 +34,6 @@ def change_password(request):
 @login_required
 def view_update_profile(request):
     context = {'request': request}
-    personal_profile_form = None
     if request.method == 'GET':
         user_form = PersonalUserForm(instance=request.user)
         if request.user.is_faculty:
@@ -55,6 +54,9 @@ def view_update_profile(request):
         elif request.user.is_staff:
             personal_profile_form = PersonalStaffForm(
                 data=request.POST, instance=request.user.staff_profile)
+        elif request.user.is_student:
+            personal_profile_form = PersonalStudentForm(
+                data=request.POST, instance=request.user.student_profile)
         if user_form.is_valid() and personal_profile_form.is_valid():
             user_form.save()
             personal_profile_form.save()

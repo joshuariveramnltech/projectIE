@@ -127,15 +127,17 @@ def view_update_grade(request, subject_grade_id):
 def student_registration(request):
     if not request.user.is_student:
         raise PermissionDenied
+    current = SubjectInstance.objects.all().values(
+        'school_year', 'semester').distinct().order_by('-semester', '-school_year').first()
     subject_list = SubjectInstance.objects.filter(
         year_and_section=request.user.student_profile.year_and_section,
-        school_year=str(datetime.now().year) + "-" +
-                    str(datetime.now().year + 1)
+        school_year=current['school_year'],
+        semester=current['semester']
     ).order_by('-semester')
     enrolled_subjects = SubjectGrade.objects.filter(
         student=request.user.student_profile,
-        school_year=str(datetime.now().year) + "-" +
-                    str(datetime.now().year + 1)
+        school_year=current['school_year'],
+        semester=current['semester']
     ).order_by('-subject_instance__semester')
     if request.method == "POST":
         selected_subjects = request.POST.getlist('selected_subjects')
@@ -159,22 +161,24 @@ def student_registration(request):
                         student=request.user.student_profile,
                         semester=subject.semester,
                         school_year=subject.school_year,
-                    )
+                    ) # retrive semester final grade instance
                 except SemesterFinalGrade.DoesNotExist:
                     SemesterFinalGrade.objects.create(
                         student=request.user.student_profile,
                         semester=subject.semester,
                         school_year=subject.school_year,
-                    )
+                    ) # create semester final grade instance
                     semester_grade = SemesterFinalGrade.objects.get(
                         student=request.user.student_profile,
                         semester=subject.semester,
                         school_year=subject.school_year,
-                    )
+                    ) # retrieve semester grade instance
                 semester_grade.subject_grades.add(subject_grade)
             return HttpResponseRedirect(reverse('grading_system:student_registration'))
     context = {'subject_list': subject_list,
-               'enrolled_subjects': enrolled_subjects}
+               'enrolled_subjects': enrolled_subjects,
+               'current_semester' : current['semester'],
+               'current_school_year': current['school_year']}
     return render(request, 'student_registration.html', context)
 
 
@@ -213,11 +217,13 @@ def student_tagging(request, student_id, student_username):
     if not request.user.faculty_profile.is_chairperson:
         raise PermissionDenied
     student = User.objects.get(id=student_id)
+    current = SubjectInstance.objects.all().values(
+        'school_year', 'semester').distinct().order_by('-semester', '-school_year').first()
     student_subject_list = SubjectGrade.objects.filter(
-        student=student.student_profile).order_by('-date_created')
+        student=student.student_profile).order_by('-semester', '-school_year', '-date_created')
     subject_list = SubjectInstance.objects.filter(
-        school_year=str(datetime.now().year) + "-" +
-                    str(datetime.now().year + 1)
+        school_year=current['school_year'],
+        semester=current['semester']
     ).order_by('-date_created')
     subject_query = request.GET.get('subject_query')
     record_query = request.GET.get('record_query')
@@ -322,7 +328,8 @@ def class_list_pdf(request, subject_instance_id, subject_code):
     response = HttpResponse(content_type='application/pdf')
     response["Content-Disposition"] = "filename='class_list{}_{}.pdf'".format(
         subject_instance.subject.description, subject_instance.year_and_section)
-    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/main.css'), ])
+    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[
+        weasyprint.CSS(settings.STATIC_ROOT + '/main.css'), ])
     return response
 
 
@@ -332,15 +339,19 @@ def print_schedule_pdf(request):
     if not request.user.is_faculty:
         raise PermissionDenied
     current_date_time = str(datetime.now().strftime('%h %d %Y %H:%M'))
-    current_school_year = str(datetime.now().year) + "-" + str(datetime.now().year + 1)
+    current = SubjectInstance.objects.all().values(
+        'school_year', 'semester').distinct().order_by('-semester', '-school_year').first()
     assigned_subjects_per_year = SubjectInstance.objects.filter(
         instructor=request.user.faculty_profile,
-        school_year=current_school_year
+        school_year=current['school_year'],
+        semester=current['semester']
     ).order_by('-semester', '-date_created')
     context = {'assigned_subjects_per_year': assigned_subjects_per_year,
-               'current_date_time': current_date_time, 'current_school_year': current_school_year}
+               'current_date_time': current_date_time, 'current_school_year': current['school_year']}
     html = render_to_string('print_schedule_pdf.html', context)
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = "filename='schedule_{}.pdf'".format(current_school_year)
-    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/main.css'), ])
+    response['Content-Disposition'] = "filename='schedule_{}.pdf'".format(
+        current['school_year'])
+    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[
+        weasyprint.CSS(settings.STATIC_ROOT + '/main.css'), ])
     return response

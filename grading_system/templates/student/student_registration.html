@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load grading_system_tags %}
-{% block title %}{{ request.user.get_full_name }} | Registration{% endblock title %}
+{% block title %}Registration | {{ current_semester }} | {{ current_school_year }}{% endblock title %}
 {% block content %}
 <div>
     <br><br>
