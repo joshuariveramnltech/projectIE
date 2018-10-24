@@ -3,163 +3,232 @@
 {% load grading_system_tags %}
 {% block title %}{{ student.get_full_name }} |Tagging{% endblock title %}
 {% block content %}
-<div>
-    <p>Name: {{ student.get_full_name }}</p>
-    <p>Student No. : {{ student.username }}</p>
-    <p>Email: {{ student.email }}</p>
-    <p>Course: {{ student.student_profile.course }}</p>
-    <p>Course Description: {{ student.student_profile.course_description }}</p>
-    <p>Year And Section: {{ student.student_profile.year_and_section }}</p>
-</div>
-<div>
-    <h2>Records</h2>
-    <div>
-        <form action="." method="GET">
-            <input type="search" value="{{ request.GET.record_query }}" name="record_query" />
-            <input type="submit" value="Search" />
-        </form>
-        {% if student_subjects %}
-        <table>
-            <th>Subject Code</th>
-            <th>Description</th>
-            <th>Units</th>
-            <th>SY</th>
-            <th>Semester</th>
-            <th>Year and Section</th>
-            <th>Instructor</th>
-            <th>Final Grade</th>
-            <th>Grade Status</th>
-            <th>Option</th>
-            {% for subject_grade in student_subjects %}
-            <tr>
-                <td>{{ subject_grade.subject_instance.subject.subject_code }}</td>
-                <td>{{ subject_grade.subject_instance.subject.description }}</td>
-                <td>{{ subject_grade.subject_instance.subject.units }}</td>
-                <td>{{ subject_grade.subject_instance.school_year }}</td>
-                <td>{{ subject_grade.subject_instance.semester }}</td>
-                <td>{{ subject_grade.subject_instance.year_and_section }}</td>
-                <td>{{ subject_grade.subject_instance.instructor }}</td>
-                <td>{{ subject_grade.final_grade }}</td>
-                <td>{{ subject_grade.grade_status }}</td>
-                <td>
-                    <a href="{% url 'grading_system:remove_subject_chairperson' subject_grade.id student.id student.username %}" onclick="return confirm('Remove {{ subject_grade.subject_instance.subject.description }} for {{ student.get_full_name }}. This Operation Cannot Be Undone!')">
-                        Remove
-                    </a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        <div>
-            <ul class="pagination right col s12">
-
-                {% if student_subjects.has_previous %}
-                <li class="waves-effect"><a href="?student_subject_page=1&record_query={{ request.GET.record_query }}"
-                        title="First Page">
-                        <i class="material-icons">first_page</i></a></li>
-                <li class="waves-effect"><a href="?student_subject_page={{ student_subjects.previous_page_number }}&record_query={{ request.GET.record_query }}"><i
-                            class="material-icons">chevron_left</i></a></li>
-                {% endif %}
-                <li>
-                    {% if student_subjects %}
-                    <a class="current">
-                        Page {{ student_subjects.number }} of {{ student_subjects.paginator.num_pages }}.
-                    </a>
-                    {% endif %}
-                </li>
-                {% if student_subjects.has_next %}
-                <li class="waves-effect"><a href="?student_subject_page={{ student_subjects.next_page_number }}&record_query={{ request.GET.record_query }}"><i
-                            class="material-icons">chevron_right</i></a></li>
-                <li class="waves-effect"><a href="?student_subject_page={{ student_subjects.paginator.num_pages }}&record_query={{ request.GET.record_query }}"
-                        title="Last Page"><i class="material-icons">last_page</i></a></li>
-                {% endif %}
-            </ul>
+<br>
+<div class="row">
+    <div class="col s12">
+        <div class="card hoverable">
+            <div class="card-content row">
+                <div class="col s2">
+                    <img src="{{ student.photo.url }}" class="circle" style="height:200px; width:200px; object-fit: cover;">
+                </div>
+                <div class="col s9 row">
+                    <div class="col s6">
+                        <p><h5><b>{{ student.get_full_name }}</b></h5></p>
+                        <h6>Student Number : {{ student.username }}</h6>
+                        <h6>Email: {{ student.email }}</h6>
+                    </div>
+                   <div class="col s6">
+                        <h6>Course: {{ student.student_profile.course }}</h6>
+                        <h6>Course Description: {{ student.student_profile.course_description }}</h6>
+                        <h6>Year And Section: {{ student.student_profile.year_and_section }}</h6>
+                   </div>
+                </div>
+                
+            </div>
         </div>
-        {% else %}
-        No Records for this Student yet..
-        {% endif %}
     </div>
-    <div>
-        <h3>Available Subjects</h3>
-        <form method="GET" action=".">
-            <input type="search" value="{{ request.GET.subject_query }}" name="subject_query" placeholder="Search" />
-            <input type="submit" value="Search" />
-        </form>
-        {% if subjects %}
-        <table border="1">
-            <th>Add?</th>
-            <th>Subject Code</th>
-            <th>Description</th>
-            <th>Units</th>
-            <th>SY</th>
-            <th>Semester</th>
-            <th>Year and Section</th>
-            <th>Instructor</th>
-            <th>Option</th>
-            <form method="POST" action=".">
-                {% csrf_token %}
-                {% for subject_instance in subjects %}
-                <tr>
-                    <td>
-
-                        {% is_already_enrolled student.id subject_instance.id as flag %}
-                        {% if flag == True %}
-                        &#9745
+    <div class="col s12">
+        <div class="card hoverable">
+            <div class="card-content">
+                    <img class="right" src="{% static 'file.svg' %}" style="width:50px; object-fit: cover;">
+                    <h4><b>Student's Record</b></h4>
+                    <div>
+                        <form action="." method="GET" class="row">
+                            <div class="col s5 offset-s6">
+                                <div class="input-field">
+                                    <i class="material-icons prefix">search</i>
+                                    <input type="search" value="{{ request.GET.record_query }}" name="record_query" id="inSearch" />
+                                    <label for="inSearch">Search Subject(s)</label>
+                                    <span class="helper-text">Use keywords. i.e. Subject code, units, etc.</span>
+                                </div>
+                            </div>
+                            <div class="col s1">
+                                <button type="submit" class="btn waves-effect purple">Search</button>
+                            </div>
+                            
+                            
+                        </form>
+                        {% if student_subjects %}
+                        <table class="centered highlight responsive-table">
+                            <thead>
+                                <tr class="grey lighten-2">
+                                    <th><h6>Subject Code</h6></th>
+                                    <th><h6>Description</h6></th>
+                                    <th><h6>Units</h6></th>
+                                    <th><h6>SY</h6></th>
+                                    <th><h6>Semester</h6></th>
+                                    <th><h6>Year and Section</h6></th>
+                                    <th><h6>Instructor</h6></th>
+                                    <th><h6>Final Grade</h6></th>
+                                    <th><h6>Grade Status</h6></th>
+                                    <th><h6>Option</h6></th>
+                                </tr>
+                            </thead>
+                            {% for subject_grade in student_subjects %}
+                            <tr>
+                                <td>{{ subject_grade.subject_instance.subject.subject_code }}</td>
+                                <td>{{ subject_grade.subject_instance.subject.description }}</td>
+                                <td>{{ subject_grade.subject_instance.subject.units }}</td>
+                                <td>{{ subject_grade.subject_instance.school_year }}</td>
+                                <td>{{ subject_grade.subject_instance.semester }}</td>
+                                <td>{{ subject_grade.subject_instance.year_and_section }}</td>
+                                <td>{{ subject_grade.subject_instance.instructor }}</td>
+                                <td>{{ subject_grade.final_grade }}</td>
+                                <td>{{ subject_grade.grade_status }}</td>
+                                <td>
+                                    <a href="{% url 'grading_system:remove_subject_chairperson' subject_grade.id student.id student.username %}" onclick="return confirm('Remove {{ subject_grade.subject_instance.subject.description }} for {{ student.get_full_name }}. This Operation Cannot Be Undone!')">
+                                        Remove
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                        <div>
+                            <ul class="pagination right">
+                
+                                {% if student_subjects.has_previous %}
+                                <li class="waves-effect"><a href="?student_subject_page=1&record_query={{ request.GET.record_query }}"
+                                        title="First Page">
+                                        <i class="material-icons">first_page</i></a></li>
+                                <li class="waves-effect"><a href="?student_subject_page={{ student_subjects.previous_page_number }}&record_query={{ request.GET.record_query }}"><i
+                                            class="material-icons">chevron_left</i></a></li>
+                                {% endif %}
+                                <li>
+                                    {% if student_subjects %}
+                                    <a class="current">
+                                        Page {{ student_subjects.number }} of {{ student_subjects.paginator.num_pages }}.
+                                    </a>
+                                    {% endif %}
+                                </li>
+                                {% if student_subjects.has_next %}
+                                <li class="waves-effect"><a href="?student_subject_page={{ student_subjects.next_page_number }}&record_query={{ request.GET.record_query }}"><i
+                                            class="material-icons">chevron_right</i></a></li>
+                                <li class="waves-effect"><a href="?student_subject_page={{ student_subjects.paginator.num_pages }}&record_query={{ request.GET.record_query }}"
+                                        title="Last Page"><i class="material-icons">last_page</i></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
                         {% else %}
-                        <label>
-                            <input type="checkbox" value="{{ subject_instance.id }}" name="selected_subjects" />
-                            <span></span>
-                        </label>
+                        No Records for this Student yet..
                         {% endif %}
-
-                    </td>
-                    <td>{{ subject_instance.subject.subject_code }}</td>
-                    <td>{{ subject_instance.subject.description }}</td>
-                    <td>{{ subject_instance.subject.units }}</td>
-                    <td>{{ subject_instance.school_year }}</td>
-                    <td>{{ subject_instance.semester }}</td>
-                    <td>{{ subject_instance.year_and_section }}</td>
-                    <td>{{ subject_instance.instructor }}</td>
-                    <td><a href="{% url 'grading_system:class_list_pdf' subject_instance.id subject_instance.subject.subject_code %}" target="_blank">Class List</a></td>
-                </tr>
-                {% endfor %}
-                <input type="submit" value="Submit" id="submit-form" class="hiddendiv" />
-            </form>
-        </table>
-        <br>
-        <div>
-            <button class="btn white-text">
-                <label class="white-text" for="submit-form" tabindex="0">
-                    Submit <i class="material-icons left">add</i></label>
-            </button>
+                        <br><br>
+                    </div>
+            </div>
         </div>
-
-        <div>
-            <ul class="pagination right col s12">
-
-                {% if subjects.has_previous %}
-                <li class="waves-effect"><a href="?subject_page=1&subject_query={{ request.GET.subject_query }}" title="First Page"><i
-                            class="material-icons">first_page</i></a></li>
-                <li class="waves-effect"><a href="?subject_page={{ subjects.previous_page_number }}&subject_query={{ request.GET.subject_query }}"><i
-                            class="material-icons">chevron_left</i></a></li>
-                {% endif %}
-                <li>
-                    {% if subjects %}
-                    <a class="current">
-                        Page {{ subjects.number }} of {{ subjects.paginator.num_pages }}.
-                    </a>
-                    {% endif %}
-                </li>
-                {% if subjects.has_next %}
-                <li class="waves-effect"><a href="?subject_page={{ subjects.next_page_number }}&subject_query={{ request.GET.subject_query }}"><i
-                            class="material-icons">chevron_right</i></a></li>
-                <li class="waves-effect"><a href="?subject_page={{ subjects.paginator.num_pages }}&subject_query={{ request.GET.subject_query }}"
-                        title="Last Page"><i class="material-icons">last_page</i></a></li>
-                {% endif %}
-            </ul>
-        </div>
-        {% else %}
-        Empty Results...
-        {% endif %}
+           
     </div>
+    <div class="col s12">
+           <div class="card hoverable">
+               <div class="card-content row">
+                   <div class="col s12">
+                        <img class="right" src="{% static 'archive.svg' %}" style="width:50px; object-fit: cover;">
+                        <h4><b>Available Subject</b></h4>
+                        <form method="GET" action="." class="row">
+                            <div class="col s12">
+                                <div class="col s5 offset-s6">
+                                    <div class="input-field">
+                                        <i class="material-icons prefix">search</i>
+                                        <input type="search" value="{{ request.GET.subject_query }}" name="subject_query" id="id_search" />
+                                        <label for="id_search">Search Subject(s)</label>
+                                        <span class="helper-text">Use keywords. i.e. Subject code, units, etc.</span>
+                                    </div>
+                                </div>
+                                <div class="col s1">
+                                    <button type="submit" class="btn btn-medium left purple" >Search</button>
+                                </div>
+                            </div>
+                        </form>
+                   </div>
+                   <div class="col s12">
+                        {% if subjects %}
+                        <table border="1" class="highlight centered">
+                            <thead>
+                                <tr class="grey lighten-2">
+                                    <th><h6>Add?</h6></th>
+                                    <th><h6>Subject Code</h6></th>
+                                    <th><h6>Description</h6></th>
+                                    <th><h6>Units</h6></th>
+                                    <th><h6>SY</h6></th>
+                                    <th><h6>Semester</h6></th>
+                                    <th><h6>Year and Section</h6></th>
+                                    <th><h6>Instructor</h6></th>
+                                    <th><h6>Option</h6></th>
+                                </tr>
+                            </thead>
+                            
+                            <form method="POST" action=".">
+                                {% csrf_token %}
+                                {% for subject_instance in subjects %}
+                                <tr>
+                                    <td>
+                
+                                        {% is_already_enrolled student.id subject_instance.id as flag %}
+                                        {% if flag == True %}
+                                        &#9745
+                                        {% else %}
+                                        <label>
+                                            <input type="checkbox" value="{{ subject_instance.id }}" name="selected_subjects" />
+                                            <span></span>
+                                        </label>
+                                        {% endif %}
+                
+                                    </td>
+                                    <td>{{ subject_instance.subject.subject_code }}</td>
+                                    <td>{{ subject_instance.subject.description }}</td>
+                                    <td>{{ subject_instance.subject.units }}</td>
+                                    <td>{{ subject_instance.school_year }}</td>
+                                    <td>{{ subject_instance.semester }}</td>
+                                    <td>{{ subject_instance.year_and_section }}</td>
+                                    <td>{{ subject_instance.instructor }}</td>
+                                    <td><a href="{% url 'grading_system:class_list_pdf' subject_instance.id subject_instance.subject.subject_code %}" target="_blank">Class List</a></td>
+                                </tr>
+                                {% endfor %}
+                                <input type="submit" value="Submit" id="submit-form" class="hiddendiv" />
+                            </form>
+                        </table>
+                        <br>
+                        <div>
+                            <button class="btn white-text">
+                                <label class="white-text" for="submit-form" tabindex="0">
+                                    Submit <i class="material-icons left">add</i></label>
+                            </button>
+                        </div>
+                        <div>
+                            <ul class="pagination right">
+                
+                                {% if subjects.has_previous %}
+                                <li class="waves-effect"><a href="?subject_page=1&subject_query={{ request.GET.subject_query }}" title="First Page"><i
+                                            class="material-icons">first_page</i></a></li>
+                                <li class="waves-effect"><a href="?subject_page={{ subjects.previous_page_number }}&subject_query={{ request.GET.subject_query }}"><i
+                                            class="material-icons">chevron_left</i></a></li>
+                                {% endif %}
+                                <li>
+                                    {% if subjects %}
+                                    <a class="current">
+                                        Page {{ subjects.number }} of {{ subjects.paginator.num_pages }}.
+                                    </a>
+                                    {% endif %}
+                                </li>
+                                {% if subjects.has_next %}
+                                <li class="waves-effect"><a href="?subject_page={{ subjects.next_page_number }}&subject_query={{ request.GET.subject_query }}"><i
+                                            class="material-icons">chevron_right</i></a></li>
+                                <li class="waves-effect"><a href="?subject_page={{ subjects.paginator.num_pages }}&subject_query={{ request.GET.subject_query }}"
+                                        title="Last Page"><i class="material-icons">last_page</i></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        {% else %}
+                        Empty Results...
+                        {% endif %}
+                   </div>
+                   
+                    <br>
+               </div>
+           </div>
+    </div>
+
+        
 </div>
+
+<br><br>
 {% endblock content %}

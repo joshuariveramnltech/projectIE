@@ -3,17 +3,18 @@
 {% load grading_system_tags %}
 {% block title %}{{ request.user.get_full_name }} | Registration{% endblock title %}
 {% block content %}
-<div class="green lighten-2">
-    <br><br><br>
+<div>
+    <br><br>
     <div class="container">
-        <div class="card">
+        <div class="card hoverable">
             <div class="card-content row">
                     {% if enrolled_subjects %}
                 <div class="col s3 row">
                     <div>
+                        <br>
                         <center><img src="{% static 'lamp.svg' %}" style="height:200px; object-fit: cover;"></center>
                         <br><b><h6><hr class="grey"></h6></b><br>
-                        <h5 class="center">Subjects Enrolled</h5>
+                        <h5 class="center"><b>Subjects Enrolled</b></h5>
                     </div>
                 </div>
                 <div class="col s9">
@@ -34,19 +35,21 @@
                         </tr>
                         {% endfor %}
                     </table>
-                    {% else %}
+                    
+                </div>
+                {% else %}
                     <br>
                     <center><img src="{% static 'cactus.svg' %}" style="height:200px; object-fit: cover;"></center>
-                    <h6 class="center">Ooooops! It seems no subject is available. <br> If this is an error contact your department.</h6>
+                    <h6 class="center"><b>Ooooops!</b></h6>
+                    <h6 class="center"> It seems no subject is available. <br> If this is an error contact your department.</h6>
                     {% endif %}
-                </div>
                 <div class="col s12">
                     <br><br>
                 </div>
                 
             </div>
         </div>
-        <div class="card">
+        <div class="card hoverable">
             <div class="card-content row">
                 {% if subject_list %}
                 <div class="col s3 row">
@@ -89,19 +92,20 @@
                     <div>
                         <button class="btn white-text"><label class="white-text" for="submit-form" tabindex="0">Add Selected Subject(s)<i class="material-icons left"></i></label></button>
                     </div>
-                    {% else %}
-                    <br>
-                    <center><img src="{% static 'cactus.svg' %}" style="height:200px; object-fit: cover;"></center>
-                    <h6 class="center">Ooooops! It seems no subject is available. <br> If this is an error contact your department.</h6>
-                    {% endif %}
+                    
                 </div>
-
-               
-         
+                {% else %}
+                    <div class="col s12">
+                        <br>
+                            <center><img src="{% static 'adhesive-tape.svg' %}" style="height:200px; object-fit: cover;"></center>
+                            <h5 class="center"><b>Ooooops!</b></h5>
+                            <h6 class="center"> It seems no subject is available. <br> If this is an error contact your department.</h6>
+                    </div>
+                    
+                    {% endif %}
             </div>
         </div>
-        <br><br><br><br>
     </div>
-    
+    <br><br><br>
 </div>
 {% endblock content %}

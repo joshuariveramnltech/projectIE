@@ -4,26 +4,36 @@
 {% block title %}{{ request.user.get_full_name }} | Grades{% endblock title %}
 
 {% block content %}
-<div class="green lighten-2">
-    <br><br><br>
+<div>
+    <br><br>
     <div class="container">
         {% if grades %}
         {% for grade in grades %}
         <div class="card z-depth-4">
             <div class="card-content row">
-                <div class="col s3">
+                <div class="col s2">
                     <br>
-                    <img src="{% static 'pup-logo.png' %}" style="height:200px; object-fit: cover;">
+                    <img src="{% static 'pup-logo.png' %}" style="width:100%; object-fit: cover;">
                 </div>
-                <div class="col s9">
-                    <h5 class="right green-text text-darken-4"><b>Grades</b></h5>
-                    <h4><b>{{ request.user.get_full_name }}</b></h4>
-                    <h6>School Year: {{ grade.school_year }}</h6>
-                    <h6>Course Code: {{ request.user.student_profile.course }}</h6>
-                    <h6>Course Description: {{ request.user.student_profile.course_description }}</h6>
-                    <h6>Semester: {{ grade.semester }}</h6>
-                    <h6>Status: {{ request.user.student_profile.status }}</h6>
-                    <h6>GPA: {% compute_gpa grade.id %}</h6>
+                <div class="col s10 row">
+                    <div class="col s12">
+                        <i class="material-icons right small">note</i>
+                        <h5><b>{{ request.user.get_full_name }}</b></h5>
+                    </div>
+                    <div class="col s12 row grey-text text-darken-2">
+                        <div class="col s6">
+                            <h6>School Year:&nbsp; <u>{{ grade.school_year }}</u> </h6>
+                            <h6>Course Code:&nbsp; <u>{{ request.user.student_profile.course }}</u></h6>
+                            <h6>Course Description: &nbsp;<u>{{ request.user.student_profile.course_description }}</u></h6>
+                        </div>
+                        <div class="col s6">
+                            <h6>Semester: &nbsp;<u>{{ grade.semester }}</u></h6>
+                            <h6>Status: &nbsp;<u>{{ request.user.student_profile.status }}</u></h6>
+                            <h6>GPA: &nbsp;<u> {% compute_gpa grade.id %}</u></h6>
+                        </div>
+                    </div>
+                   
+                    
                     
                 </div>
                 <div class="col s12">
@@ -36,24 +46,31 @@
                             
                          
                             <div>
-                                <table border="1" class="highlight">
-                                    <th>Subject Code</th>
-                                    <th>Subject Description</th>
-                                    <th>Instructor</th>
-                                    <th>Units</th>
-                                    <th>Sect. Code</th>
-                                    <th>Final Grade</th>
-                                    <th>Grade Status</th>
-                                    {% for subject_grade in grade.subject_grades.all %}
-                                    <tr>
-                                        <td>{{ subject_grade.subject_instance.subject.subject_code }}</td>
-                                        <td>{{ subject_grade.subject_instance.subject.description }}</td>
-                                        <td>{{ subject_grade.subject_instance.instructor }}</td>
-                                        <td>{{ subject_grade.subject_instance.subject.units }}</td>
-                                        <td>{{ subject_grade.subject_instance.year_and_section }}</td>
-                                        <td>{{ subject_grade.final_grade }}</td>
-                                        <td>{{ subject_grade.grade_status }}</td>
-                                    </tr>
+                                <table border="1" class="highlight centered">
+                                    <thead>
+                                        <tr class="grey lighten-2">
+                                            <th><h6>Subject Code </h6></th>
+                                            <th><h6>Subject Description</h6></th>
+                                            <th><h6>Instructor</h6></th>
+                                            <th><h6>Units</h6></th>
+                                            <th><h6>Sect. Code</h6></th>
+                                            <th><h6>Final Grade</h6></th>
+                                            <th><h6>Grade Status</h6></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for subject_grade in grade.subject_grades.all %}
+                                        <tr>
+                                            <td>{{ subject_grade.subject_instance.subject.subject_code }}</td>
+                                            <td>{{ subject_grade.subject_instance.subject.description }}</td>
+                                            <td>{{ subject_grade.subject_instance.instructor }}</td>
+                                            <td>{{ subject_grade.subject_instance.subject.units }}</td>
+                                            <td>{{ subject_grade.subject_instance.year_and_section }}</td>
+                                            <td>{{ subject_grade.final_grade }}</td>
+                                            <td>{{ subject_grade.grade_status }}</td>
+                                        </tr>
+                                    </tbody>
+                                    
                                     {% endfor %}
                                 </table>
                             </div>
@@ -66,7 +83,15 @@
         </div>
         {% endfor %}
         {% else %}
-        No Enrolled Subjects for this Account....
+        <div class="card">
+            <div class="card-content">
+                <center><img src="{% static 'fired.svg' %}" style="height:200px; object-fit: cover;"></center>
+                <h6 class="center"><b>Ooooops!</b></h6>
+                <h6 class="center"> It seems that you are not enrolled in any subject. <br> This might mean that you are dismissed. <br> Please contact your administrator immidiately!</h6>
+            </div>
+        </div>
+        <br>
+                   
         {% endif %}
 
         
