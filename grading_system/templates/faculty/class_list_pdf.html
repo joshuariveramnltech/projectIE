@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ subject_instance.subject.subject_code }} | {{ subject_instance.year_and_section }}</title>
+</head>
+<body>
+<div>
+    <div>
+        <small>Date: {{ current_date_time }}</small>
+        <p>Subject: {{ subject_instance.subject.subject_code }}</p>
+        <p>Description: {{ subject_instance.subject.description }}</p>
+        <p>Schedule: {{ subject_instance.schedule }}</p>
+        <p>Year and Section: {{ subject_instance.year_and_section }}</p>
+        <p>SY: {{ subject_instance.school_year }}</p>
+    </div>
+    <table border="1">
+        <th>Name</th>
+        <th>Student Number</th>
+        <th>Email</th>
+        {% for student in subject_students %}
+        <tr>
+            <td>{{ student.get_full_name }}</td>
+            <td>{{ student.username }}</td>
+            <td>{{ student.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>

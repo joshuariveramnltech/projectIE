@@ -5,7 +5,8 @@
 <div class="green lighten-2">
     <br><br>
     <div class="container">
-        <button id="submit_btn" class="waves-effect waves-light btn modal-trigger hiddendiv" href="#modal1">Modal</button>
+        <button id="submit_btn" class="waves-effect waves-light btn modal-trigger hiddendiv" href="#modal1">Modal
+        </button>
         <div class="card">
             <div class="card-content row">
                 <div>
@@ -19,10 +20,34 @@
                     <br><br>
                     <form method="post" action="{% url 'grading_system:view_update_grade' subject_grade.id %}">
                         {% csrf_token %}
-                        {{ update_subject_grade_form.as_p }}
+                        <!--{{ update_subject_grade_form.as_p }}-->
+                        <p><label for="id_final_grade">Final grade:</label>
+                            <select name="final_grade" id="id_final_grade">
+                                {% for value in update_subject_grade_form.final_grade %}
+                                {{ value }}
+                                {% endfor %}
+
+                            </select></p>
+                        <p>
+                            <label for="id_is_finalized">
+                                {% if update_subject_grade_form.is_finalized.value %}
+                                <input type="checkbox" name="is_finalized" id="id_is_finalized" checked>
+                                {% else %}
+                                <input type="checkbox" name="is_finalized" id="id_is_finalized">
+                                {% endif %}
+
+                                <span>Finalized?</span>
+                            </label>
+                            <span class="helptext">Once finalized, you can no longer make any more changes.</span>
+                        </p>
                         <br><br>
-                        <button class="btn purple waves-effect white-text" type="submit" style="width:100%">Post Grade</button>
+                        <button class="btn purple waves-effect white-text" type="submit" style="width:100%">
+                            Post Grade
+                        </button>
                     </form>
+                    <a href="{% url 'grading_system:view_students_per_subject' subject_grade.subject_instance.id subject_grade.subject_instance.subject.subject_code %}">
+                        Back
+                    </a>
                 </div>
                 <br><br>
             </div>
@@ -31,8 +56,9 @@
         <div id="modal1" class="modal">
             <div class="modal-content">
                 {% for message in messages %}
-                <center><img src="{% static 'pen-container.svg' %}" style="object-fit: fill; max-height: 100px"> <br><h5><b>{{ message }}</b></h5></center>
-                {% endfor %} 
+                <center><img src="{% static 'pen-container.svg' %}" style="object-fit: fill; max-height: 100px"> <br>
+                    <h5><b>{{ message }}</b></h5></center>
+                {% endfor %}
             </div>
             <div class="modal-footer">
                 <a href="" class="modal-close waves-effect waves-green btn-flat">OK</a>

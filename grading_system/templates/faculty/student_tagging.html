@@ -94,6 +94,7 @@
             <th>Semester</th>
             <th>Year and Section</th>
             <th>Instructor</th>
+            <th>Option</th>
             <form method="POST" action=".">
                 {% csrf_token %}
                 {% for subject_instance in subjects %}
@@ -118,6 +119,7 @@
                     <td>{{ subject_instance.semester }}</td>
                     <td>{{ subject_instance.year_and_section }}</td>
                     <td>{{ subject_instance.instructor }}</td>
+                    <td><a href="{% url 'grading_system:class_list_pdf' subject_instance.id subject_instance.subject.subject_code %}" target="_blank">Class List</a></td>
                 </tr>
                 {% endfor %}
                 <input type="submit" value="Submit" id="submit-form" class="hiddendiv" />

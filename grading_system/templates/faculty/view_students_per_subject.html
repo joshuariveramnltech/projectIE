@@ -14,6 +14,10 @@
                 </div>
                 <div>
                     <h4>{{ subject_instance.subject.description }}</h4>
+                    <span>
+                        <small>
+                            <a href="{% url 'grading_system:class_list_pdf' subject_instance.id subject_instance.subject.subject_code %}" target="_blank">Print Class List</a>
+                        </small></span>
                     <h6>Semester: {{ subject_instance.semester }}</h6>
                     <h6>SY: {{ subject_instance.school_year }}</h6>
                     {% if subject_grades %}

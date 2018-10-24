@@ -7,9 +7,12 @@ from django.core.exceptions import PermissionDenied
 from .models import SemesterFinalGrade
 from .forms import UpdateSubjectGrade
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from datetime import datetime
 from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
+import weasyprint
+from django.conf import settings
 # Create your views here.
 
 User = get_user_model()
@@ -127,12 +130,12 @@ def student_registration(request):
     subject_list = SubjectInstance.objects.filter(
         year_and_section=request.user.student_profile.year_and_section,
         school_year=str(datetime.now().year) + "-" +
-        str(datetime.now().year+1)
+                    str(datetime.now().year + 1)
     ).order_by('-semester')
     enrolled_subjects = SubjectGrade.objects.filter(
         student=request.user.student_profile,
         school_year=str(datetime.now().year) + "-" +
-        str(datetime.now().year+1)
+                    str(datetime.now().year + 1)
     ).order_by('-subject_instance__semester')
     if request.method == "POST":
         selected_subjects = request.POST.getlist('selected_subjects')
@@ -214,7 +217,7 @@ def student_tagging(request, student_id, student_username):
         student=student.student_profile).order_by('-date_created')
     subject_list = SubjectInstance.objects.filter(
         school_year=str(datetime.now().year) + "-" +
-        str(datetime.now().year+1)
+                    str(datetime.now().year + 1)
     ).order_by('-date_created')
     subject_query = request.GET.get('subject_query')
     record_query = request.GET.get('record_query')
@@ -297,3 +300,47 @@ def remove_subject_chairperson(request, subject_grade_id, student_id, student_us
     instance = SubjectGrade.objects.get(id=subject_grade_id)
     instance.delete()
     return HttpResponseRedirect(reverse('grading_system:student_tagging', args=[student_id, student_username]))
+
+
+# for faculty only
+@login_required
+def class_list_pdf(request, subject_instance_id, subject_code):
+    if not request.user.is_faculty:
+        raise PermissionDenied
+    current_date_time = str(datetime.now().strftime('%h %d %Y %H:%M'))
+    subject_instance = SubjectInstance.objects.get(id=subject_instance_id)
+    protocol = request.build_absolute_uri().split(':')[0]
+    subject_students = User.objects.filter(
+        student_profile__student_grade__subject_instance=subject_instance)
+    context = {
+        'subject_instance': subject_instance,
+        'protocol': protocol,
+        'subject_students': subject_students,
+        'current_date_time': current_date_time
+    }
+    html = render_to_string('class_list_pdf.html', context)
+    response = HttpResponse(content_type='application/pdf')
+    response["Content-Disposition"] = "filename='class_list{}_{}.pdf'".format(
+        subject_instance.subject.description, subject_instance.year_and_section)
+    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/main.css'), ])
+    return response
+
+
+# for faculty only
+@login_required
+def print_schedule_pdf(request):
+    if not request.user.is_faculty:
+        raise PermissionDenied
+    current_date_time = str(datetime.now().strftime('%h %d %Y %H:%M'))
+    current_school_year = str(datetime.now().year) + "-" + str(datetime.now().year + 1)
+    assigned_subjects_per_year = SubjectInstance.objects.filter(
+        instructor=request.user.faculty_profile,
+        school_year=current_school_year
+    ).order_by('-semester', '-date_created')
+    context = {'assigned_subjects_per_year': assigned_subjects_per_year,
+               'current_date_time': current_date_time, 'current_school_year': current_school_year}
+    html = render_to_string('print_schedule_pdf.html', context)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = "filename='schedule_{}.pdf'".format(current_school_year)
+    weasyprint.HTML(string=html).write_pdf(response, stylesheets=[weasyprint.CSS(settings.STATIC_ROOT + '/main.css'), ])
+    return response

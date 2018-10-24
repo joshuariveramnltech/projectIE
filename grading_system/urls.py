@@ -24,4 +24,8 @@ urlpatterns = [
          views.student_tagging, name='student_tagging'),
     path('faculty/student/untagging/<int:subject_grade_id>/<int:student_id>/<student_username>/',
          views.remove_subject_chairperson, name='remove_subject_chairperson'),
+    path('faculty/print/class-list/<int:subject_instance_id>/<subject_code>/', views.class_list_pdf,
+         name="class_list_pdf"),
+    path('faculty/print/per-year/schedule/', views.print_schedule_pdf,
+         name="print_schedule_pdf")
 ]
