@@ -57,12 +57,12 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'account/templates/'),
-            os.path.join(BASE_DIR, 'account/templates/account/'),
-            os.path.join(BASE_DIR, 'account/templates/registration/'),
-            os.path.join(BASE_DIR, 'grading_system/templates/'),
-            os.path.join(BASE_DIR, 'grading_system/templates/student/'),
-            os.path.join(BASE_DIR, 'grading_system/templates/faculty/'),
+            os.path.join(BASE_DIR, 'account/templates'),
+            os.path.join(BASE_DIR, 'account/templates/account'),
+            os.path.join(BASE_DIR, 'account/templates/registration'),
+            os.path.join(BASE_DIR, 'grading_system/templates'),
+            os.path.join(BASE_DIR, 'grading_system/templates/student'),
+            os.path.join(BASE_DIR, 'grading_system/templates/faculty'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -141,13 +141,13 @@ LOGOUT_REDIRECT_URL = 'login'
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_root/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'staticfiles/'),
-    os.path.join(BASE_DIR, 'staticfiles/img/'),
+    os.path.join(BASE_DIR, 'staticfiles'),
+    os.path.join(BASE_DIR, 'staticfiles/img'),
 ]
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_USER = 'web.dmca.noreply@gmail.com'
