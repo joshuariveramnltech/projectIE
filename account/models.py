@@ -74,8 +74,7 @@ for year in range(2010, datetime.now().year + 15):
         )
     )
 
-phone_regex = RegexValidator(
-    regex="^\+63-\d{3}\-\d{4}\-\d{3}$", message="Format: +63-999-9999-999")
+phone_regex = RegexValidator(regex="^\+63-\d{3}\-\d{4}\-\d{3}$", message="Format: +63-999-9999-999")
 
 
 class CurrentState(models.Model):
