@@ -1,5 +1,4 @@
 *.sqlite3
-migrations/
 *.pyc
 .vscode/
 .idea/
