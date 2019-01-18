@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+django = "*"
+weasyprint = "*"
+django-heroku = "*"
+whitenoise = "*"
+mysqlclient = "*"
+gunicorn = "*"
+mysql-connector = "*"
+django-taggit = "*"
+pillow = "*"
+dj-static = "*"
+dj-database-url = "*"
+cloudinary = "*"
+requests = "*"
+django-phonenumber-field = "*"
+django-phone-field = "*"
+
+[requires]
+python_version = "3.7"
