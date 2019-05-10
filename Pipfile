@@ -4,9 +4,11 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pylint = "*"
+autopep8 = "*"
 
 [packages]
-django = "*"
+django = "==2.1.7"
 weasyprint = "*"
 django-heroku = "*"
 whitenoise = "*"
@@ -23,4 +25,4 @@ django-phonenumber-field = "*"
 django-phone-field = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.6"

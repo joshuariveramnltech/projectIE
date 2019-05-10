@@ -96,8 +96,8 @@ DATABASES = {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         },
         'NAME': 'dbie',
-        'USER': 'root',
-        'PASSWORD': '',
+        'USER': 'pypert',
+        'PASSWORD': 'P@ssw0rd',
         'HOST': '127.0.0.1',
         'PORT': '',
     }
