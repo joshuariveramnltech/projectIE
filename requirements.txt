@@ -60,7 +60,7 @@ pdfrw==0.4
 pep8==1.7.1
 phonenumberslite==8.9.10
 Pillow==5.4.1
-pipenv==2018.11.26
+pipenv==2022.1.8
 psycopg2==2.7.5
 pyasn1==0.4.4
 pyasn1-modules==0.2.2
